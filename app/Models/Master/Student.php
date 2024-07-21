@@ -21,4 +21,8 @@ class Student extends Model
         'alamat',
         'created_at',
     ];
+
+    protected $dates = [
+        'tanggal_lahir',
+    ];
 }

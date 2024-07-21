@@ -88,17 +88,19 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div wire:ignore class="form-group">
+                                <div class="form-group">
                                     <label for="mdReligion">Agama</label>
-                                    <select data-wire-model="religion" name="religion" id="mdReligion" class="form-control select2" style="width: 100%;" required>
-                                        <option value="" disabled selected>Select your option</option>
-                                        <option value="Islam">Islam</option>
-                                        <option value="Kristen ">Kristen </option>
-                                        <option value="Hindu">Hindu</option>
-                                        <option value="Buddha">Buddha</option>
-                                        <option value="Konghucu">Konghucu</option>
-                                        <option value="Lainnya">Lainnya</option>
-                                    </select>
+                                    <div wire:ignore>
+                                        <select data-wire-model="religion" name="religion" id="mdReligion" class="form-control select2" style="width: 100%;" required>
+                                            <option value="" disabled selected>Select your option</option>
+                                            <option value="Islam">Islam</option>
+                                            <option value="Kristen ">Kristen </option>
+                                            <option value="Hindu">Hindu</option>
+                                            <option value="Buddha">Buddha</option>
+                                            <option value="Konghucu">Konghucu</option>
+                                            <option value="Lainnya">Lainnya</option>
+                                        </select>
+                                    </div>
                                     @error('religion') <span class="text-sm text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>

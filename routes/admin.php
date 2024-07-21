@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin;
 use App\Http\Livewire\Admin as LvAdmin;
+use App\Http\Livewire\Components;
 use App\Http\Livewire\Master;
 use App\Http\Livewire\Transaction as LvTransaction;
 /*
@@ -44,6 +45,7 @@ Route::middleware([
 
     Route::prefix('record')->name('record.')->group(function () {
         Route::get('/record/student-violation', LvTransaction\LvStudentViolation::class)->name('student.violation');
+        Route::get('/record/student-violation/select-get', [LvTransaction\LvStudentViolation::class, 'slcViolation'])->name('student.violation.select2');
         Route::post('/record/student-violation/dt-get', [LvTransaction\LvStudentViolation::class, 'dtViolation'])->name('student.violation.datatables');
 
         Route::get('/record/student-sanction', LvTransaction\LvStudentSanction::class)->name('student.sanction');
@@ -51,6 +53,10 @@ Route::middleware([
 
         Route::get('/record/student-achievement', LvTransaction\LvStudentAchievement::class)->name('student.achievement');
         Route::post('/record/student-achievement/dt-get', [LvTransaction\LvStudentAchievement::class, 'dtAchievement'])->name('student.achievement.datatables');
+    });
+
+    Route::prefix('component-requests')->name('component.')->group(function () {
+        Route::post('violation/dt-get', [Components\LvModalViolation::class, 'dtViolation'])->name('violation.datatables');
     });
 
     Route::post('/logout', [Admin\LoginController::class, 'logout'])->name('admin.logout');

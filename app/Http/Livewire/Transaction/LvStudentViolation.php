@@ -3,7 +3,10 @@
 namespace App\Http\Livewire\Transaction;
 
 use App\Helpers\StringHelper;
+use App\Models\Master\Student;
+use App\Models\Master\Violation;
 use App\Models\Transaction\StudentViolation;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\Request;
 use Livewire\Component;
 use Yajra\DataTables\Facades\DataTables;
@@ -16,7 +19,26 @@ class LvStudentViolation extends Component
     public $stdVioIdViolation;
     public $stdVioNote;
 
-    public $viewPageType = 1;
+    public $selected = [
+        'student' => [
+            'nis' => null,
+            'fullname' => null,
+            'gender' => null,
+            'birthPlace' => null,
+            'birthDate' => null,
+            'address' => null,
+            'formattedDate' => null
+        ],
+        'violation' => [
+            'code' => null,
+            'type' => null,
+            'name' => null,
+            'point' => null,
+            'category' => null,
+        ],
+    ];
+
+    public $viewPageType = 2;
     public $viewFormType = 1;
 
     private $validationRules = [
@@ -25,6 +47,11 @@ class LvStudentViolation extends Component
         'stdVioNis' => 'required',
         'stdVioPoint' => 'required|integer',
         'stdVioNote' => 'required',
+    ];
+
+    protected $listeners = [
+        'setInputStudent' => 'setStudent',
+        'setInputViolation' => 'setViolation',
     ];
 
     public function render()
@@ -79,5 +106,48 @@ class LvStudentViolation extends Component
                 'action'
             ])
             ->toJson();
+    }
+
+    public function slcViolation(Request $request)
+    {
+        $search = StringHelper::escapeLike($request->input('search') ?? '');
+        $data = Student::query()
+            ->select('nis', 'nama_siswa')
+            ->where('nis', 'like', "%{$search}%")
+            ->orWhere('nama_siswa', 'LIKE', '%' . $search . '%')
+            ->orderBy('nama_siswa', 'asc')
+            ->limit(10)
+            ->get();
+
+        return $data->toJson();
+    }
+
+    public function setStudent($nis)
+    {
+        $student = Student::where('nis', $nis)->first();
+
+        $formattedDate = $student->tanggal_lahir->format('d-m-Y');
+        $this->selected['student'] = [
+            'nis' => $student->nis,
+            'fullname' => $student->nama_siswa,
+            'gender' => $student->jenis_kelamin,
+            'birthPlace' => $student->tempat_lahir,
+            'birthDate' => $student->tanggal_lahir,
+            'address' => $student->alamat,
+            'formattedDate' => $formattedDate
+        ];
+    }
+
+    public function setViolation($id)
+    {
+        $violation = Violation::find($id);
+
+        $this->selected['violation'] = [
+            'code' => $violation->kode_pelanggaran,
+            'type' => $violation->jenis,
+            'name' => $violation->nama_pelanggaran,
+            'point' => $violation->bobot_poin,
+            'category' => $violation->kategori,
+        ];
     }
 }

@@ -12,7 +12,7 @@ use App\Helpers\MenuHelper;
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{config('app.name')}} | @yield('page-title', 'Home')</title>
-
+  
   <link rel="icon" href="{{ asset('images/pages/logo-app-favicon.ico') }}" type="image/x-icon">
   @yield('top-css')
   @include('layouts.cms.css')
@@ -21,8 +21,30 @@ use App\Helpers\MenuHelper;
     .gap-1 {
       gap: .25rem;
     }
+    .gap-2 {
+      gap: .5rem;
+    }
     .custom-text-sm {
       font-size: .875rem !important;
+    }
+    .inside-modal-overlay {
+      border-radius: .25rem;
+      -ms-flex-align: center;
+      align-items: center;
+      background-color: rgba(255, 255, 255, .7);
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-pack: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    
+    .inside-modal-overlay.loading {
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
     }
   </style>
   <!-- Scripts -->
@@ -178,6 +200,9 @@ use App\Helpers\MenuHelper;
     window.addEventListener('datatables:refresh', function(event) {
       window[event.detail.target].search('')
       window[event.detail.target].ajax.reload()
+    })
+    window.addEventListener('component-modal:close', function(event) {
+      $(event.detail.target).modal('hide')
     })
   </script>
   @yield('script')

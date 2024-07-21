@@ -1,1 +1,1 @@
-<x-button-datatables :edit="$edit ?? null" :detail="$detail ?? null" :delete="$delete ?? null"></x-button-datatables>
+<x-button-datatables :edit="$edit ?? null" :detail="$detail ?? null" :pick="$pick ?? null" :delete="$delete ?? null"></x-button-datatables>
