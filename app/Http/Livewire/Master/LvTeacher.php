@@ -90,6 +90,7 @@ class LvTeacher extends Component
         $this->birthDate = $teacher->tanggal_lahir;
         $this->address = $teacher->alamat;
         $this->religion = $teacher->agama;
+        $this->dispatchBrowserEvent('select2:set-value', ['target' => "#mdReligion", 'value' => $this->religion]);
     }
 
     public function sendTeacher(int $formType)

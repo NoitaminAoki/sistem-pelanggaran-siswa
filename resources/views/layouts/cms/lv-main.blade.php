@@ -196,6 +196,10 @@ use App\Helpers\MenuHelper;
       }
       Toast.fire(config)
     })
+
+    window.addEventListener('swal-loader:close', function(event) {
+      swalLoader.close()
+    })
     
     window.addEventListener('datatables:refresh', function(event) {
       window[event.detail.target].search('')

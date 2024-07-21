@@ -18,6 +18,7 @@
                         <div class="card-header">
                             <h6 class="card-title mb-0">Buat Laporan Pelanggaran </h6>
                         </div>
+                        <form x-on:submit.prevent="$wire.sendReportViolation(formType)">
                         <div class="card-body">
                             <div class="row">
 
@@ -97,7 +98,7 @@
                                                         <input type="hidden" id="mdViolationCode" class="form-control" wire:model.defer="selected.violation.code">
                                                         <input type="text" id="mdViolationName" class="form-control" placeholder="Pilih pelanggaran" value="{{$selected['violation']['name']}}" readonly>
                                                     </div>
-                                                    <button class="btn bg-gradient-navy" data-toggle="modal" data-target="#modalViolation"><i class="fas fa-search"></i></button>
+                                                    <button class="btn bg-gradient-navy" type="button" data-toggle="modal" data-target="#modalViolation"><i class="fas fa-search"></i></button>
                                                     
                                                 </div>
                                                 @error('stdVioNis') <span class="text-sm text-danger">{{ $message }}</span> @enderror
@@ -145,7 +146,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="mdStdVioNote">Catatan</label>
-                                        <textarea wire:model.defer="stdVioNote" name="stdVioNote" id="mdStdVioNote" class="form-control {{($errors->has('stdVioNote'))? 'is-invalid' : ''}}" rows="3" required></textarea>
+                                        <textarea wire:model.defer="stdVioNote" name="stdVioNote" id="mdStdVioNote" class="form-control {{($errors->has('stdVioNote'))? 'is-invalid' : ''}}" rows="3"></textarea>
                                     @error('stdVioNote') <span class="text-sm text-danger">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
@@ -156,16 +157,17 @@
                             <div class="w-100">
                                 <div class="d-flex justify-content-end gap-2">
                                     <button class="btn btn-light btn-sm" type="button" wire:loading.attr="disabled" @click="pageType = 1">Cancel</button>
-                                    <button class="btn btn-primary btn-sm" type="button" wire:loading.attr="disabled">Submit</button>
+                                    <button class="btn btn-primary btn-sm" type="submit" wire:loading.attr="disabled">Submit</button>
                                 </div>
                             </div>
                         </div>
+                    </form>
                     </div>
                 </div>
                 
             </div>
         </div>
-        <div x-show="pageType == 1" x-cloak class="col-md-12">
+        <div x-show="pageType == 1" class="col-md-12">
             <div class="card border">
                 <div class="card-header">
                     <h6 class="card-title mb-0">Daftar Pelanggaran Siswa </h6>
@@ -339,6 +341,35 @@
             }
         });
     })
+
+    function editStudentViolation(e) {
+        let self = e.currentTarget
+        let id = self.getAttribute('data-id')
+        swalLoader.fire()
+        @this.setStudentViolation(id)
+    }
+
+    function deleteStudentViolation(e) {
+        let self = e.currentTarget
+        let id = self.getAttribute('data-id')
+
+        swalBsButtons.fire({
+            title: 'Anda yakin ingin menghapus data?',
+            text: "Anda tidak akan dapat mengembalikan ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                swalLoader.fire()
+                setTimeout(() => {
+                    @this.deleteStudentViolation(id)
+                }, 300);
+            }
+        })
+    }
 </script>
 @stack('child-script')
 @endsection

@@ -15,7 +15,7 @@ class LvViolation extends Component
     public $violationType = "";
     public $violationName;
     public $violationPoint;
-    public $violationCategory;
+    public $violationCategory = "";
 
     public $viewFormType = 1;
 
@@ -194,6 +194,7 @@ class LvViolation extends Component
         ]);
         $this->viewFormType = 1;
         $this->violationType = "";
+        $this->violationCategory = "";
     }
 
     public function reloadDataTables()
