@@ -202,66 +202,6 @@
     <livewire:components.lv-modal-violation action="setInputViolation" modal-id="modalViolation">
     <!-- End Modal -->
 
-    <!-- Modal -->
-    <div wire:ignore.self class="modal fade" id="stdVioModal" tabindex="-1" aria-labelledby="stdVioModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="stdVioModalLabel" x-text="(formType == 1)? 'Tambah Pelanggaran' : 'Edit Pelanggaran'"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form x-on:submit.prevent="$wire.sendStdVio(formType)">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="mdStdVioDesc">Deskripsi</label>
-                                    <input wire:model.defer="stdVioDesc" type="text" name="stdVioDesc" id="mdStdVioDesc" class="form-control {{($errors->has('stdVioDesc'))? 'is-invalid' : ''}}" autocomplete="off" required>
-                                    @error('stdVioDesc') <span class="text-sm text-danger">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <template x-if="formType == 2">
-                                    <div class="form-group d-none">
-                                        <input type="hidden" wire:model.defer="stdVioId" name="stdVioId" id="mdStdVioId">
-                                    </div>
-                                </template>
-                                <div class="form-group">
-                                    <label for="mdStdVioCode">Kode Prestasi</label>
-                                    <input wire:model.defer="stdVioCode" type="text" name="stdVioCode" id="mdStdVioCode" class="form-control {{($errors->has('stdVioCode'))? 'is-invalid' : ''}}" autocomplete="off" required>
-                                    @error('stdVioCode') <span class="text-sm text-danger">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="mdStdVioPoint">Poin</label>
-                                    <input wire:model.defer="stdVioPoint" type="number" name="stdVioPoint" id="mdStdVioPoint" class="form-control {{($errors->has('stdVioPoint'))? 'is-invalid' : ''}}" autocomplete="off" required>
-                                    @error('stdVioPoint') <span class="text-sm text-danger">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="mdAcheivementNote">Catatan</label>
-                                    <textarea wire:model.defer="stdVioNote" name="stdVioNote" id="mdAcheivementNote" class="form-control {{($errors->has('stdVioNote'))? 'is-invalid' : ''}}" rows="3" required></textarea>
-                                    @error('stdVioNote') <span class="text-sm text-danger">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" wire:target="sendStdVio" wire:loading.attr="disabled" class="btn btn-sm btn-light" data-dismiss="modal">Close</button>
-                        <button type="submit" wire:target="sendStdVio" class="btn btn-sm btn-primary">
-                            <span wire:loading.remove wire:target="sendStdVio">Submit</span>
-                            <span wire:loading wire:target="sendStdVio" style="display: none">Submitting...</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- End Modal -->
 </div>
 
 @section('script')

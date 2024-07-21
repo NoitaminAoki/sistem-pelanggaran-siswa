@@ -51,6 +51,7 @@ Route::middleware([
         Route::post('/record/student-violation/dt-get', [LvTransaction\LvStudentViolation::class, 'dtViolation'])->name('student.violation.datatables');
 
         Route::get('/record/student-sanction', LvTransaction\LvStudentSanction::class)->name('student.sanction');
+        Route::get('/record/student-sanction/select-get', [LvTransaction\LvStudentSanction::class, 'slcSanction'])->name('student.sanction.select2');
         Route::post('/record/student-sanction/dt-get', [LvTransaction\LvStudentSanction::class, 'dtSanction'])->name('student.sanction.datatables');
 
         Route::get('/record/student-achievement', LvTransaction\LvStudentAchievement::class)->name('student.achievement');
@@ -70,6 +71,7 @@ Route::middleware([
 
     Route::prefix('component-requests')->name('component.')->group(function () {
         Route::post('violation/dt-get', [Components\LvModalViolation::class, 'dtViolation'])->name('violation.datatables');
+        Route::post('sanction/dt-get', [Components\LvModalSanction::class, 'dtSanction'])->name('sanction.datatables');
     });
 
     Route::post('/logout', [Admin\LoginController::class, 'logout'])->name('admin.logout');
