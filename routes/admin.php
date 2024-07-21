@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin;
 use App\Http\Livewire\Admin as LvAdmin;
 use App\Http\Livewire\Components;
 use App\Http\Livewire\Master;
+use App\Http\Livewire\Report as LvReport;
 use App\Http\Livewire\Transaction as LvTransaction;
+
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
@@ -53,6 +55,17 @@ Route::middleware([
 
         Route::get('/record/student-achievement', LvTransaction\LvStudentAchievement::class)->name('student.achievement');
         Route::post('/record/student-achievement/dt-get', [LvTransaction\LvStudentAchievement::class, 'dtAchievement'])->name('student.achievement.datatables');
+    });
+
+    Route::prefix('report')->name('report.')->group(function () {
+        Route::get('/violation', LvReport\LvRpViolation::class)->name('violation');
+        Route::post('/violation/dt-get', [LvReport\LvRpViolation::class, 'dtRpViolation'])->name('violation.datatables');
+   
+        Route::get('/sanction', LvReport\LvRpSanction::class)->name('sanction');
+        Route::post('/sanction/dt-get', [LvReport\LvRpSanction::class, 'dtRpSanction'])->name('sanction.datatables');
+    
+        Route::get('/achievement', LvReport\LvRpAchievement::class)->name('achievement');
+        Route::post('/achievement/dt-get', [LvReport\LvRpAchievement::class, 'dtRpAchievement'])->name('achievement.datatables');
     });
 
     Route::prefix('component-requests')->name('component.')->group(function () {

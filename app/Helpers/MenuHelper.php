@@ -96,6 +96,51 @@ class MenuHelper
             ],
             'branch' => [],
         ],
+        [
+            'title' => 'Laporan Pelanggaran',
+            'sub_title' => '',
+            'name' => 'report_violation',
+            'root' => 'laporan',
+            'route_name' => 'report.violation',
+            'route_validate' => ['report.violation', 'report.violation.*'],
+            'icon_class' => 'fas fa-file-alt',
+            'breadcrumb' => [
+                ['name' => 'home', 'has_link' => true, 'route_name' => 'admin.dashboard'],
+                ['name' => 'report', 'has_link' => false],
+                ['name' => 'violation', 'has_link' => false],
+            ],
+            'branch' => [],
+        ],
+        [
+            'title' => 'Laporan Sanksi',
+            'sub_title' => '',
+            'name' => 'report_sanction',
+            'root' => 'laporan',
+            'route_name' => 'report.sanction',
+            'route_validate' => ['report.sanction', 'report.sanction.*'],
+            'icon_class' => 'fas fa-file-alt',
+            'breadcrumb' => [
+                ['name' => 'home', 'has_link' => true, 'route_name' => 'admin.dashboard'],
+                ['name' => 'report', 'has_link' => false],
+                ['name' => 'sanction', 'has_link' => false],
+            ],
+            'branch' => [],
+        ],
+        [
+            'title' => 'Laporan Prestasi',
+            'sub_title' => '',
+            'name' => 'report_achievement',
+            'root' => 'laporan',
+            'route_name' => 'report.achievement',
+            'route_validate' => ['report.achievement', 'report.achievement.*'],
+            'icon_class' => 'fas fa-file-alt',
+            'breadcrumb' => [
+                ['name' => 'home', 'has_link' => true, 'route_name' => 'admin.dashboard'],
+                ['name' => 'report', 'has_link' => false],
+                ['name' => 'achievement', 'has_link' => false],
+            ],
+            'branch' => [],
+        ],
     ];
 
     public static function GetMenu()
