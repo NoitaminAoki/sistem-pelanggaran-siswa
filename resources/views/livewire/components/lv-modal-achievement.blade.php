@@ -61,7 +61,7 @@
             { data: 'action', name: 'action', className: 'text-center' },
             ],
             columnDefs: [
-            { targets: 6, orderable: false },
+            { targets: 5, orderable: false },
             ],
         }).on('draw', function() {
             console.info("Datatables: drawed");
