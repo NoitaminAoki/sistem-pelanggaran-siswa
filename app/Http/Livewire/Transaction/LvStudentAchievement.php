@@ -214,10 +214,29 @@ class LvStudentAchievement extends Component
 
         DB::beginTransaction();
         try {
+
+            // Calculate the initial points
+            $poin_awal_record = StudentAchievement::select(DB::raw('coalesce(sum(a.poin_prestasi), 0) as poin_prestasi'))
+                ->leftJoin('achievements as a', 'a.id', '=', 'student_achievements.achievement_id')
+                ->where('student_achievements.student_nis', $this->selected['student']['nis'])
+                ->groupBy('student_achievements.student_nis')
+                ->first();
+
+            $poin_awal = $poin_awal_record ? $poin_awal_record->poin_prestasi : 0;
+
+            // Get the points for the specific achievement
+            $poin_prestasi = Achievement::where('kode_prestasi', $this->selected['achievement']['code'])->value('poin_prestasi');
+
+            // Calculate the final points
+            $poin_akhir = $poin_awal + $poin_prestasi;
+
             $create_student_ach = StudentAchievement::create([
                 'teacher_nip' => $this->stdAchNip,
                 'student_nis' => $this->selected['student']['nis'],
                 'achievement_id' => $this->selected['achievement']['id'],
+                'poin_awal' => $poin_awal,
+                'poin_akhir' => $poin_akhir,
+                'poin_penambahan' => $poin_prestasi,
                 'catatan' => $this->stdAchNote,
             ]);
 
@@ -261,11 +280,33 @@ class LvStudentAchievement extends Component
 
         DB::beginTransaction();
         try {
-            $create_student_ach = StudentAchievement::where('id', $this->stdAchId)
+
+            $current_record_id = $this->stdAchId;
+
+            // Calculate the initial points
+            $poin_awal_record = StudentAchievement::select(DB::raw('coalesce(sum(a.poin_prestasi), 0) as poin_prestasi'))
+                ->leftJoin('achievements as a', 'a.id', '=', 'student_achievements.achievement_id')
+                ->where('student_achievements.student_nis', $this->selected['student']['nis'])
+                ->where('student_achievements.id','!=', $current_record_id)
+                ->groupBy('student_achievements.student_nis')
+                ->first();
+
+            $poin_awal = $poin_awal_record ? $poin_awal_record->poin_prestasi : 0;
+
+            // Get the points for the specific achievement
+            $poin_prestasi = Achievement::where('kode_prestasi', $this->selected['achievement']['code'])->value('poin_prestasi');
+
+            // Calculate the final points
+            $poin_akhir = $poin_awal + $poin_prestasi;
+
+            $create_student_ach = StudentAchievement::where('id', $current_record_id)
                 ->update([
                     'teacher_nip' => $this->stdAchNip,
                     'student_nis' => $this->selected['student']['nis'],
                     'achievement_id' => $this->selected['achievement']['id'],
+                    'poin_awal' => $poin_awal,
+                    'poin_akhir' => $poin_akhir,
+                    'poin_penambahan' => $poin_prestasi,
                     'catatan' => $this->stdAchNote,
                 ]);
 
