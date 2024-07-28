@@ -99,7 +99,7 @@
 </style>
 @endsection
 
-<div x-data="{ reportType: @entangle('views.reportType').defer, filters: @entangle('filters') }">
+<div x-data="{ filters: @entangle('filters') }">
     <div class="row">
         <div class="col-md-12">
             <div class="card border">
@@ -109,23 +109,6 @@
                     <div class="row mb-5">
                         <div class="col-md-7">
                             <div class="row">
-                                <div class="col-12 mb-4-p5">
-                                    <div class="form-title-header">
-                                        <div class="header-icon">
-                                            <i class="fas fa-file-alt"></i>
-                                        </div>
-                                        <div class="header-title">
-                                            <h5>Jenis Laporan</h5>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="form-box-content">
-                                        <div class="btn-group btn-block form-group-text">
-                                            <button type="button" class="btn btn-menu-width" @click="reportType = 1" :class="reportType == 1 ? 'bg-gradient-indigo' : 'btn-default'">Semua Laporan</button>
-                                            <button type="button" class="btn btn-menu-width" @click="reportType = 2" :class="reportType == 2 ? 'bg-gradient-indigo' : 'btn-default'">Laporan Individu</button>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="col-12 mb-4-p5">
                                     <div class="form-title-header">
                                         <div class="header-icon">
@@ -173,62 +156,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <div class="col-12 mb-4-p5" x-show="reportType == 2" x-cloak>
-                                    <div class="form-title-header">
-                                        <div class="header-icon">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                        <div class="header-title">
-                                            <h5>Siswa</h5>
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-group-text">
-                                        <label for="mdStudentName">Nama</label>
-                                        <div class="d-flex align-items-center">
-                                            <div class="mr-2 flex-grow-1">
-                                                <input type="hidden" id="mdStudentNis" class="form-control" wire:model.defer="selected.student.nis">
-                                                <input type="text" id="mdStudentName" class="form-control" placeholder="Pilih Siswa" value="{{$selected['student']['fullname']}}" readonly>
-                                            </div>
-                                            <button class="btn form-btn form-btn-light" type="button" data-toggle="modal" data-target="#modalStudent"><i class="fas fa-search"></i> <span>Search</span></button>
-                                            
-                                        </div>
-                                    </div>
-                                    <div class="row form-description">
-                                        <div class="col-sm-6">
-                                            <p class="d-flex flex-column">
-                                                <span class="font-weight-bold">
-                                                    NIS
-                                                </span>
-                                                <span class="text-muted">{{ $selected['student']['nis'] ?? '-' }}</span>
-                                            </p>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <p class="d-flex flex-column">
-                                                <span class="font-weight-bold">
-                                                    Jenis Kelamin
-                                                </span>
-                                                <span class="text-muted">{{ $selected['student']['gender'] ?? '-' }}</span>
-                                            </p>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <p class="d-flex flex-column">
-                                                <span class="font-weight-bold">
-                                                    Tanggal Lahir
-                                                </span>
-                                                <span class="text-muted">{{ $selected['student']['formattedDate'] ?? '-' }}</span>
-                                            </p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="d-flex flex-column">
-                                                <span class="font-weight-bold">
-                                                    Alamat
-                                                </span>
-                                                <span class="text-muted">{{ $selected['student']['address'] ?? '-' }}</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="col-12 mb-4-p5">
                                     <div class="d-flex justify-content-end">
                                         <button type="button" wire:click="resetFilter" class="btn btn-light px-5 mr-2">Reset</button>
@@ -263,11 +190,13 @@
                             <thead> 
                                 <tr>
                                     <th scope="col">No</th>
-                                    <th scope="col">Pembuat Laporan</th>
+                                    <th scope="col">NIS</th>
                                     <th scope="col">Nama Siswa</th>
-                                    <th scope="col">Pelanggaran</th>
-                                    <th scope="col">Catatan</th>
-                                    <th scope="col">Tanggal</th>
+                                    <th scope="col">Pelanggaran (Ringan)</th>
+                                    <th scope="col">Pelanggaran (Sedang)</th>
+                                    <th scope="col">Pelanggaran (Berat)</th>
+                                    <th scope="col">Total Pelanggaran</th>
+                                    <th scope="col">Total Poin</th>
                                 </tr>
                             </thead>
                             
@@ -277,10 +206,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- Modal -->
-    <livewire:components.lv-modal-student action="setInputStudent" modal-id="modalStudent">
-    <!-- End Modal -->
     
 </div>
 
@@ -325,7 +250,7 @@
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
                 },
-                url: "{{ route('report.violation.datatables') }}",
+                url: "{{ route('report.violation.summary.datatables') }}",
                 data: function (d) {
                     d.filters = reportFilters;
                 },
@@ -333,11 +258,13 @@
             },
             columns: [
             { data: 'DT_RowIndex', name: 'id' },
-            { data: 'nama_guru', name: 'teachers.nama_guru' },
-            { data: 'nama_siswa', name: 'students.nama_siswa' },
-            { data: 'nama_pelanggaran', name: 'violations.nama_pelanggaran' },
-            { data: 'catatan', name: 'catatan' },
-            { data: 'tanggal_pelanggaran', name: 'tanggal_pelanggaran' },
+            { data: 'nis', name: 'nis' },
+            { data: 'nama_siswa', name: 'nama_siswa' },
+            { data: 'total_pelanggaran_ringan', name: 'total_pelanggaran_ringan' },
+            { data: 'total_pelanggaran_sedang', name: 'total_pelanggaran_sedang' },
+            { data: 'total_pelanggaran_berat', name: 'total_pelanggaran_berat' },
+            { data: 'total_pelanggaran', name: 'total_pelanggaran' },
+            { data: 'total_poin', name: 'total_poin' },
             ],
         }).on('draw', function() {
             console.info("Datatables: drawed");

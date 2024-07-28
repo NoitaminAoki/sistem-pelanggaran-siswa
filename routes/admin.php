@@ -60,12 +60,17 @@ Route::middleware([
     });
 
     Route::prefix('report')->name('report.')->group(function () {
-        Route::get('/violation', LvReport\LvRpViolation::class)->name('violation');
-        Route::post('/violation/dt-get', [LvReport\LvRpViolation::class, 'dtRpViolation'])->name('violation.datatables');
-   
+
+        Route::prefix('violation')->group(function () {
+            Route::get('/', LvReport\LvRpViolation::class)->name('violation');
+            Route::post('/dt-get', [LvReport\LvRpViolation::class, 'dtRpViolation'])->name('violation.datatables');
+            Route::get('/summary', LvReport\LvRpViolationSummary::class)->name('violation.summary');
+            Route::post('/summary/dt-get', [LvReport\LvRpViolationSummary::class, 'dtRpViolationSummary'])->name('violation.summary.datatables');
+        });
+
         Route::get('/sanction', LvReport\LvRpSanction::class)->name('sanction');
         Route::post('/sanction/dt-get', [LvReport\LvRpSanction::class, 'dtRpSanction'])->name('sanction.datatables');
-    
+
         Route::get('/achievement', LvReport\LvRpAchievement::class)->name('achievement');
         Route::post('/achievement/dt-get', [LvReport\LvRpAchievement::class, 'dtRpAchievement'])->name('achievement.datatables');
     });
@@ -74,6 +79,7 @@ Route::middleware([
         Route::post('violation/dt-get', [Components\LvModalViolation::class, 'dtViolation'])->name('violation.datatables');
         Route::post('sanction/dt-get', [Components\LvModalSanction::class, 'dtSanction'])->name('sanction.datatables');
         Route::post('achievement/dt-get', [Components\LvModalAchievement::class, 'dtAchievement'])->name('achievement.datatables');
+        Route::post('student/dt-get', [Components\LvModalStudent::class, 'dtStudent'])->name('student.datatables');
     });
 
     Route::post('/logout', [Admin\LoginController::class, 'logout'])->name('admin.logout');

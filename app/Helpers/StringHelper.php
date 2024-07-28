@@ -20,4 +20,31 @@ class StringHelper
             $value
         );
     }
+
+    public static function formatGender($gender, $reverse = false)
+    {
+        if ($reverse) {
+            return self::formatGenderReverse($gender);
+        }
+        $normalized = strtolower(str_replace(' ', '', $gender));
+
+        if ($normalized === 'laki-laki') {
+            return 'L';
+        } elseif ($normalized === 'perempuan') {
+            return 'P';
+        }
+
+        return null; // or throw an exception if invalid gender is passed
+    }
+
+    private static function formatGenderReverse($gender)
+    {
+        if ($gender === 'L') {
+            return 'Laki-laki';
+        } elseif ($gender === 'P') {
+            return 'Perempuan';
+        }
+
+        return null; // or throw an exception if invalid gender is passed
+    }
 }

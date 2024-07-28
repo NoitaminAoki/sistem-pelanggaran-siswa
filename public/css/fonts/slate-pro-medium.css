@@ -1,0 +1,64 @@
+@font-face {
+    font-family: "Slate Pro Medium";
+    font-style: normal;
+    font-weight: 500;
+    src: local("Slate Pro Medium"),
+        url("../../fonts/slate-pro-medium/12730dc62b6e645ddf8a068fd14767d0.woff")
+            format("woff");
+}
+@font-face {
+    font-family: "Slate Pro Medium";
+    font-style: italic;
+    font-weight: 500;
+    src: local("Slate Pro Medium"),
+        url("../../fonts/slate-pro-medium/9cead624007df9ba1ee3097c85761f9d.woff")
+            format("woff");
+}
+@font-face {
+    font-family: "Slate Pro Light";
+    font-style: normal;
+    font-weight: 300;
+    src: local("Slate Pro Light"),
+        url("../../fonts/slate-pro-medium/41569b62a3d6b68b820ce2a0a7fd6cdc.woff")
+            format("woff");
+}
+@font-face {
+    font-family: "Slate Pro Light Condensed";
+    font-style: normal;
+    font-weight: 300;
+    src: local("Slate Pro Light Condensed"),
+        url("../../fonts/slate-pro-medium/664bdc3386d04e5c3bb0acc12043bace.woff")
+            format("woff");
+}
+@font-face {
+    font-family: "Slate Pro Light";
+    font-style: italic;
+    font-weight: 300;
+    src: local("Slate Pro Light"),
+        url("../../fonts/slate-pro-medium/7ab83a148744e42828cec53461a2bb9d.woff")
+            format("woff");
+}
+@font-face {
+    font-family: "Slate Pro Medium Condensed";
+    font-style: normal;
+    font-weight: 500;
+    src: local("Slate Pro Medium Condensed"),
+        url("../../fonts/slate-pro-medium/aa4629c8d900f73efddc6942af43dc78.woff")
+            format("woff");
+}
+@font-face {
+    font-family: "Slate Pro Condensed";
+    font-style: normal;
+    font-weight: 700;
+    src: local("Slate Pro Condensed"),
+        url("../../fonts/slate-pro-medium/a2784e8058a4f2529597305213415ee0.woff")
+            format("woff");
+}
+@font-face {
+    font-family: "Slate Pro";
+    font-style: italic;
+    font-weight: 700;
+    src: local("Slate Pro"),
+        url("../../fonts/slate-pro-medium/57b3aff0eeab116e28b1b45e9a3503aa.woff")
+            format("woff");
+}

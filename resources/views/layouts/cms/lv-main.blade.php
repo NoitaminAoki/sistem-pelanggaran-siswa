@@ -14,6 +14,10 @@ use App\Helpers\MenuHelper;
   <title>{{config('app.name')}} | @yield('page-title', 'Home')</title>
   
   <link rel="icon" href="{{ asset('images/pages/logo-app-favicon.ico') }}" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('css/fonts/slate-pro-medium.css') }}">
   @yield('top-css')
   @include('layouts.cms.css')
   @yield('css')
@@ -196,13 +200,16 @@ use App\Helpers\MenuHelper;
       }
       Toast.fire(config)
     })
-
+    
     window.addEventListener('swal-loader:close', function(event) {
       swalLoader.close()
     })
     
     window.addEventListener('datatables:refresh', function(event) {
       window[event.detail.target].search('')
+      if(event.detail.filter) {
+        window[event.detail.filter.target] = event.detail.filter.data
+      }
       window[event.detail.target].ajax.reload()
     })
     window.addEventListener('component-modal:close', function(event) {
