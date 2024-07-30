@@ -67,12 +67,24 @@ Route::middleware([
             Route::get('/summary', LvReport\LvRpViolationSummary::class)->name('violation.summary');
             Route::post('/summary/dt-get', [LvReport\LvRpViolationSummary::class, 'dtRpViolationSummary'])->name('violation.summary.datatables');
         });
-
-        Route::get('/sanction', LvReport\LvRpSanction::class)->name('sanction');
-        Route::post('/sanction/dt-get', [LvReport\LvRpSanction::class, 'dtRpSanction'])->name('sanction.datatables');
-
-        Route::get('/achievement', LvReport\LvRpAchievement::class)->name('achievement');
-        Route::post('/achievement/dt-get', [LvReport\LvRpAchievement::class, 'dtRpAchievement'])->name('achievement.datatables');
+        Route::prefix('sanction')->name('sanction.')->group(function () {
+            Route::get('/', LvReport\LvRpSanction::class)->name('all');
+            Route::post('/dt-get', [LvReport\LvRpSanction::class, 'dtRpSanction'])->name('datatables');
+            Route::get('/summary', LvReport\LvRpSanctionSummary::class)->name('summary');
+            Route::post('/summary/dt-get', [LvReport\LvRpSanctionSummary::class, 'dtRpSanctionSummary'])->name('summary.datatables');
+        });
+        Route::prefix('achievement')->name('achievement.')->group(function () {
+            Route::get('/', LvReport\LvRpAchievement::class)->name('all');
+            Route::post('/dt-get', [LvReport\LvRpAchievement::class, 'dtRpAchievement'])->name('datatables');
+            Route::get('/summary', LvReport\LvRpAchievementSummary::class)->name('summary');
+            Route::post('/summary/dt-get', [LvReport\LvRpAchievementSummary::class, 'dtRpAchievementSummary'])->name('summary.datatables');
+        });
+        Route::prefix('rank')->name('rank.')->group(function () {
+            Route::get('/best', LvReport\LvRpRankBest::class)->name('best');
+            Route::post('/best/dt-get', [LvReport\LvRpRankBest::class, 'dtRpRankBest'])->name('best.datatables');
+            Route::get('/bad', LvReport\LvRpRankBad::class)->name('bad');
+            Route::post('/bad/dt-get', [LvReport\LvRpRankBad::class, 'dtRpRankBad'])->name('bad.datatables');
+        });
     });
 
     Route::prefix('component-requests')->name('component.')->group(function () {

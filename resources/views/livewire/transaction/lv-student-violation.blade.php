@@ -156,7 +156,7 @@
                         <div class="card-footer">
                             <div class="w-100">
                                 <div class="d-flex justify-content-end gap-2">
-                                    <button class="btn btn-light btn-sm" type="button" wire:loading.attr="disabled" @click="pageType = 1">Cancel</button>
+                                    <button class="btn btn-light btn-sm" type="button" wire:loading.attr="disabled" @click="pageType = 1; $wire.resetInput()">Cancel</button>
                                     <button class="btn btn-primary btn-sm" type="submit" wire:loading.attr="disabled">Submit</button>
                                 </div>
                             </div>

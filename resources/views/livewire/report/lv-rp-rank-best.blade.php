@@ -159,7 +159,7 @@
                                 <div class="col-12 mb-4-p5">
                                     <div class="d-flex justify-content-end">
                                         <button type="button" wire:click="resetFilter" class="btn btn-light px-5 mr-2">Reset</button>
-                                        <button type="button" wire:click="dtRpViolationFilter" class="btn btn-primary px-5">Filter</button>
+                                        <button type="button" wire:click="dtRpRankBadFilter" class="btn btn-primary px-5">Filter</button>
                                     </div>
                                 </div>
                             </div>
@@ -183,10 +183,10 @@
                             </div>
                         </div>
                     </div>
-                    <h5>Data Laporan</h5>
+                    <h5>Peringkat 10 Siswa Ternakal</h5>
                     <hr>
                     <div wire:ignore class="table-responsive">
-                        <table class="table table-striped table-bordered" id="tStdVio" width="100%">
+                        <table class="table table-striped table-bordered" id="tStdReport" width="100%">
                             <thead> 
                                 <tr>
                                     <th scope="col">No</th>
@@ -196,7 +196,7 @@
                                     <th scope="col">Pelanggaran (Sedang)</th>
                                     <th scope="col">Pelanggaran (Berat)</th>
                                     <th scope="col">Total Pelanggaran</th>
-                                    <th scope="col">Total Poin</th>
+                                    <th scope="col">Total Poin Pelanggaran</th>
                                 </tr>
                             </thead>
                             
@@ -239,18 +239,18 @@
     });
 </script>
 <script>
-    var tStdVio;
+    var tStdReport;
     var reportFilters = @json($filters);
     
     $(document).ready(function() {
-        tStdVio = $('#tStdVio').DataTable({
+        tStdReport = $('#tStdReport').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
                 },
-                url: "{{ route('report.violation.summary.datatables') }}",
+                url: "{{ route('report.rank.bad.datatables') }}",
                 data: function (d) {
                     d.filters = reportFilters;
                 },
@@ -264,7 +264,7 @@
             { data: 'total_pelanggaran_sedang', name: 'total_pelanggaran_sedang' },
             { data: 'total_pelanggaran_berat', name: 'total_pelanggaran_berat' },
             { data: 'total_pelanggaran', name: 'total_pelanggaran' },
-            { data: 'total_poin', name: 'total_poin' },
+            { data: 'total_poin_pelanggaran', name: 'total_poin_pelanggaran' },
             ],
             columnDefs: [
             { targets: [3, 4, 5, 6, 7], className: 'text-center' },

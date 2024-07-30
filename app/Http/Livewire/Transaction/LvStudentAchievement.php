@@ -287,7 +287,7 @@ class LvStudentAchievement extends Component
             $poin_awal_record = StudentAchievement::select(DB::raw('coalesce(sum(a.poin_prestasi), 0) as poin_prestasi'))
                 ->leftJoin('achievements as a', 'a.id', '=', 'student_achievements.achievement_id')
                 ->where('student_achievements.student_nis', $this->selected['student']['nis'])
-                ->where('student_achievements.id','!=', $current_record_id)
+                ->where('student_achievements.id', '!=', $current_record_id)
                 ->groupBy('student_achievements.student_nis')
                 ->first();
 
@@ -373,6 +373,7 @@ class LvStudentAchievement extends Component
                 'note' => null,
             ],
         ];
+        $this->dispatchBrowserEvent('select2:reset-value', ['target' => ".select2"]);
     }
 
     public function reloadDataTables()

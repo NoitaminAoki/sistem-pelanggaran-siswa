@@ -340,11 +340,11 @@ class LvStudentSanction extends Component
                 'note' => null,
             ],
         ];
+        $this->dispatchBrowserEvent('select2:reset-value', ['target' => ".select2"]);
     }
 
     public function reloadDataTables()
     {
         $this->dispatchBrowserEvent('datatables:refresh', ['target' => "tStdSanc"]);
     }
-
 }

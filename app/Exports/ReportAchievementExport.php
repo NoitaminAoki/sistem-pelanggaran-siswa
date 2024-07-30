@@ -2,9 +2,8 @@
 
 namespace App\Exports;
 
-use App\Models\Master\Student;
+use App\Models\Transaction\StudentAchievement;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -15,11 +14,10 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class ReportViolationSummaryExport implements FromQuery, WithHeadings, WithStyles, WithMapping, ShouldAutoSize, WithColumnFormatting, WithStrictNullComparison
+class ReportAchievementExport implements FromQuery, WithHeadings, WithStyles, WithMapping, ShouldAutoSize, WithColumnFormatting
 {
     use Exportable;
 
@@ -36,43 +34,42 @@ class ReportViolationSummaryExport implements FromQuery, WithHeadings, WithStyle
     {
         return [
             'No',
-            'NIS',
+            'Pelapor',
+            'NIS Siswa',
             'Nama Siswa',
-            'Pelanggaran (Ringan)',
-            'Pelanggaran (Sedang)',
-            'Pelanggaran (Berat)',
-            'Total Pelanggaran',
-            'Total Poin',
+            'Prestasi',
+            'Poin Prestasi',
+            'Keterangan',
+            'Tanggal Laporan'
         ];
     }
 
     public function columnFormats(): array
     {
         return [
-            'B' => NumberFormat::FORMAT_TEXT, // Assuming the VARCHAR column is in column 'E'
+            'B' => NumberFormat::FORMAT_TEXT,
             'C' => NumberFormat::FORMAT_TEXT,
-            'D' => NumberFormat::FORMAT_NUMBER,
-            'E' => NumberFormat::FORMAT_NUMBER,
+            'D' => NumberFormat::FORMAT_TEXT,
+            'E' => NumberFormat::FORMAT_TEXT,
             'F' => NumberFormat::FORMAT_NUMBER,
-            'G' => NumberFormat::FORMAT_NUMBER,
-            'H' => NumberFormat::FORMAT_NUMBER,
+            'G' => NumberFormat::FORMAT_TEXT,
         ];
     }
 
     /**
-     * @param StudentViolation $studentViolation
+     * @param StudentAchievement $studentAchievement
      */
-    public function map($studentViolation): array
+    public function map($studentAchievement): array
     {
         return [
             ++$this->rowNumber,
-            $studentViolation->nis,
-            $studentViolation->nama_siswa,
-            $studentViolation->total_pelanggaran_ringan,
-            $studentViolation->total_pelanggaran_sedang,
-            $studentViolation->total_pelanggaran_berat,
-            $studentViolation->total_pelanggaran,
-            $studentViolation->total_poin,
+            $studentAchievement->nama_guru,
+            $studentAchievement->nis,
+            $studentAchievement->nama_siswa,
+            $studentAchievement->nama_prestasi,
+            $studentAchievement->poin_prestasi,
+            $studentAchievement->catatan,
+            $studentAchievement->created_at,
         ];
     }
 
@@ -80,25 +77,37 @@ class ReportViolationSummaryExport implements FromQuery, WithHeadings, WithStyle
     {
         $startDate = $this->filters['startDate'] ? Carbon::createFromFormat('d F Y', $this->filters['startDate'], 'Asia/Jakarta')->format('Y-m-d 00:00:00') : null;
         $endDate = $this->filters['endDate'] ? Carbon::createFromFormat('d F Y', $this->filters['endDate'], 'Asia/Jakarta')->format('Y-m-d 23:59:59') : null;
-        return Student::query()
+        $studentNis = $this->filters['nis'];
+        return StudentAchievement::query()
             ->select(
-                'students.id',
+                'student_achievements.*',
+                'teachers.nama_guru',
                 'students.nis',
                 'students.nama_siswa',
-                DB::raw('COALESCE(SUM(CASE WHEN violations.jenis = "Ringan" THEN 1 ELSE 0 END), 0) as total_pelanggaran_ringan'),
-                DB::raw('COALESCE(SUM(CASE WHEN violations.jenis = "Sedang" THEN 1 ELSE 0 END), 0) as total_pelanggaran_sedang'),
-                DB::raw('COALESCE(SUM(CASE WHEN violations.jenis = "Berat" THEN 1 ELSE 0 END), 0) as total_pelanggaran_berat'),
-                DB::raw('COALESCE(COUNT(violations.id), 0) as total_pelanggaran'),
-                DB::raw('COALESCE(SUM(violations.bobot_poin), 0) as total_poin'),
+                'achievements.deskripsi as nama_prestasi',
+                'achievements.poin_prestasi',
             )
-            ->leftJoin('student_violations', function ($query) use ($startDate, $endDate) {
-                $query->on('student_violations.student_nis', 'students.nis')
-                    ->where('student_violations.created_at', '>=', $startDate)
-                    ->where('student_violations.created_at', '<=', $endDate);
+            ->leftJoin('teachers', 'student_achievements.teacher_nip', 'teachers.nip')
+            ->join('students', 'student_achievements.student_nis', 'students.nis')
+            ->join('achievements', 'student_achievements.achievement_id', 'achievements.id')
+            ->when($startDate, function ($query, $startDate) use ($endDate) {
+                $query->where('student_achievements.created_at', '>=', $startDate)
+                    ->where('student_achievements.created_at', '<=', $endDate);
             })
-            ->leftJoin('violations', 'violations.id', 'student_violations.violation_id')
-            ->orderBy('students.nama_siswa', 'asc')
-            ->groupBy('students.id', 'students.nis', 'students.nama_siswa');
+            ->when($studentNis, function ($query, $studentNis) {
+                $query->where('students.nis', $studentNis);
+            })
+            ->orderBy('id', 'ASC'); // Can be customize
+    }
+
+    public function prepareRows($rows)
+    {
+        return $rows->transform(function ($studentAchievement) {
+            $studentAchievement->nama_guru = $studentAchievement->nama_guru ?? 'Administrator';
+            $studentAchievement->created_at = Carbon::parse($studentAchievement->created_at)->format('Y-m-d H:i:s');
+
+            return $studentAchievement;
+        });
     }
 
     public function styles(Worksheet $sheet)

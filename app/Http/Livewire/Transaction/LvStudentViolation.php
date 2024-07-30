@@ -335,6 +335,7 @@ class LvStudentViolation extends Component
                 'category' => null,
             ],
         ];
+        $this->dispatchBrowserEvent('select2:reset-value', ['target' => ".select2"]);
     }
 
     public function reloadDataTables()

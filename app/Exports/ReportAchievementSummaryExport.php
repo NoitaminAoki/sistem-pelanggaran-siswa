@@ -19,7 +19,7 @@ use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class ReportViolationSummaryExport implements FromQuery, WithHeadings, WithStyles, WithMapping, ShouldAutoSize, WithColumnFormatting, WithStrictNullComparison
+class ReportAchievementSummaryExport implements FromQuery, WithHeadings, WithStyles, WithMapping, ShouldAutoSize, WithColumnFormatting, WithStrictNullComparison
 {
     use Exportable;
 
@@ -38,10 +38,7 @@ class ReportViolationSummaryExport implements FromQuery, WithHeadings, WithStyle
             'No',
             'NIS',
             'Nama Siswa',
-            'Pelanggaran (Ringan)',
-            'Pelanggaran (Sedang)',
-            'Pelanggaran (Berat)',
-            'Total Pelanggaran',
+            'Total Prestasi',
             'Total Poin',
         ];
     }
@@ -49,30 +46,24 @@ class ReportViolationSummaryExport implements FromQuery, WithHeadings, WithStyle
     public function columnFormats(): array
     {
         return [
-            'B' => NumberFormat::FORMAT_TEXT, // Assuming the VARCHAR column is in column 'E'
+            'B' => NumberFormat::FORMAT_TEXT,
             'C' => NumberFormat::FORMAT_TEXT,
             'D' => NumberFormat::FORMAT_NUMBER,
             'E' => NumberFormat::FORMAT_NUMBER,
-            'F' => NumberFormat::FORMAT_NUMBER,
-            'G' => NumberFormat::FORMAT_NUMBER,
-            'H' => NumberFormat::FORMAT_NUMBER,
         ];
     }
 
     /**
-     * @param StudentViolation $studentViolation
+     * @param StudentAchievement $studentAchievement
      */
-    public function map($studentViolation): array
+    public function map($studentAchievement): array
     {
         return [
             ++$this->rowNumber,
-            $studentViolation->nis,
-            $studentViolation->nama_siswa,
-            $studentViolation->total_pelanggaran_ringan,
-            $studentViolation->total_pelanggaran_sedang,
-            $studentViolation->total_pelanggaran_berat,
-            $studentViolation->total_pelanggaran,
-            $studentViolation->total_poin,
+            $studentAchievement->nis,
+            $studentAchievement->nama_siswa,
+            $studentAchievement->total_prestasi,
+            $studentAchievement->total_poin,
         ];
     }
 
@@ -85,18 +76,15 @@ class ReportViolationSummaryExport implements FromQuery, WithHeadings, WithStyle
                 'students.id',
                 'students.nis',
                 'students.nama_siswa',
-                DB::raw('COALESCE(SUM(CASE WHEN violations.jenis = "Ringan" THEN 1 ELSE 0 END), 0) as total_pelanggaran_ringan'),
-                DB::raw('COALESCE(SUM(CASE WHEN violations.jenis = "Sedang" THEN 1 ELSE 0 END), 0) as total_pelanggaran_sedang'),
-                DB::raw('COALESCE(SUM(CASE WHEN violations.jenis = "Berat" THEN 1 ELSE 0 END), 0) as total_pelanggaran_berat'),
-                DB::raw('COALESCE(COUNT(violations.id), 0) as total_pelanggaran'),
-                DB::raw('COALESCE(SUM(violations.bobot_poin), 0) as total_poin'),
+                DB::raw('COALESCE(COUNT(achievements.id), 0) as total_prestasi'),
+                DB::raw('COALESCE(SUM(student_achievements.poin_penambahan), 0) as total_poin'),
             )
-            ->leftJoin('student_violations', function ($query) use ($startDate, $endDate) {
-                $query->on('student_violations.student_nis', 'students.nis')
-                    ->where('student_violations.created_at', '>=', $startDate)
-                    ->where('student_violations.created_at', '<=', $endDate);
+            ->leftJoin('student_achievements', function ($query) use ($startDate, $endDate) {
+                $query->on('student_achievements.student_nis', 'students.nis')
+                    ->where('student_achievements.created_at', '>=', $startDate)
+                    ->where('student_achievements.created_at', '<=', $endDate);
             })
-            ->leftJoin('violations', 'violations.id', 'student_violations.violation_id')
+            ->leftJoin('achievements', 'achievements.id', 'student_achievements.achievement_id')
             ->orderBy('students.nama_siswa', 'asc')
             ->groupBy('students.id', 'students.nis', 'students.nama_siswa');
     }
@@ -105,7 +93,7 @@ class ReportViolationSummaryExport implements FromQuery, WithHeadings, WithStyle
     {
         $lastRow = $sheet->getHighestDataRow();
 
-        $range = 'A1:H' . $lastRow;
+        $range = 'A1:E' . $lastRow;
 
         $sheet->getStyle($range)->applyFromArray([
             'borders' => [

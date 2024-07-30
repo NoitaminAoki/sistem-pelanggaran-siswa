@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Report;
 
-use App\Exports\ReportViolationSummaryExport;
+use App\Exports\ReportRankBestExport;
 use App\Helpers\StringHelper;
 use App\Models\Master\Student;
 use Carbon\Carbon;
@@ -12,7 +12,7 @@ use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
-class LvRpViolationSummary extends Component
+class LvRpRankBest extends Component
 {
     public $filters = [
         'startDate' => null,
@@ -27,17 +27,17 @@ class LvRpViolationSummary extends Component
 
     public function render()
     {
-        return view('livewire.report.lv-rp-violation-summary')
-            ->with(['pageTitle' => "Report Violation (Summary)"])
-            ->layout('layouts.cms.lv-main', ['menuName' => 'report_violation']);
+        return view('livewire.report.lv-rp-rank-best')
+            ->with(['pageTitle' => "Report Ranking Best Student"])
+            ->layout('layouts.cms.lv-main', ['menuName' => 'report_rank']);
     }
 
-    public function dtRpViolationFilter()
+    public function dtRpRankBestFilter()
     {
-        $this->dispatchBrowserEvent('datatables:refresh', ['target' => "tStdVio", 'filter' => ['target' => 'reportFilters', 'data' => $this->filters]]);
+        $this->dispatchBrowserEvent('datatables:refresh', ['target' => "tStdReport", 'filter' => ['target' => 'reportFilters', 'data' => $this->filters]]);
     }
 
-    public function dtRpViolationSummary(Request $request)
+    public function dtRpRankBest(Request $request)
     {
         $search = StringHelper::escapeLike($request->input('search.value') ?? '');
         $searchParam = $request->input('search');
@@ -52,34 +52,40 @@ class LvRpViolationSummary extends Component
                 'students.id',
                 'students.nis',
                 'students.nama_siswa',
-                DB::raw('COALESCE(SUM(CASE WHEN violations.jenis = "Ringan" THEN 1 ELSE 0 END), 0) as total_pelanggaran_ringan'),
-                DB::raw('COALESCE(SUM(CASE WHEN violations.jenis = "Sedang" THEN 1 ELSE 0 END), 0) as total_pelanggaran_sedang'),
-                DB::raw('COALESCE(SUM(CASE WHEN violations.jenis = "Berat" THEN 1 ELSE 0 END), 0) as total_pelanggaran_berat'),
-                DB::raw('COUNT(violations.id) as total_pelanggaran'),
-                DB::raw('COALESCE(SUM(violations.bobot_poin), 0) as total_poin'),
+                DB::raw('COALESCE(COUNT(student_achievements.id), 0) as total_prestasi'),
+                DB::raw('COALESCE(SUM(student_achievements.poin_penambahan), 0) as total_poin_prestasi'),
+                DB::raw('COALESCE(COUNT(student_violations.id), 0) as total_pelanggaran'),
+                DB::raw('COALESCE(SUM(violations.bobot_poin), 0) as total_poin_pelanggaran'),
+                DB::raw('(COALESCE(SUM(student_achievements.poin_penambahan), 0) - COALESCE(SUM(violations.bobot_poin), 0)) as poin_akhir'),
             )
+            ->leftJoin('student_achievements', function ($query) use ($startDate, $endDate) {
+                $query->on('student_achievements.student_nis', 'students.nis')
+                    ->where('student_achievements.created_at', '>=', $startDate)
+                    ->where('student_achievements.created_at', '<=', $endDate);
+            })
             ->leftJoin('student_violations', function ($query) use ($startDate, $endDate) {
                 $query->on('student_violations.student_nis', 'students.nis')
                     ->where('student_violations.created_at', '>=', $startDate)
                     ->where('student_violations.created_at', '<=', $endDate);
             })
             ->leftJoin('violations', 'violations.id', 'student_violations.violation_id')
-            ->groupBy('students.id', 'students.nis', 'students.nama_siswa');
+            ->groupBy('students.id', 'students.nis', 'students.nama_siswa')
+            ->having('poin_akhir', '>=', 0);
 
         return DataTables::eloquent($model)
             ->order(function ($query) {
-                $query->orderBy('students.nama_siswa', 'asc');
+                $query->orderBy('poin_akhir', 'desc');
             })
             ->addIndexColumn()
             ->only([
                 'id',
                 'nis',
                 'nama_siswa',
-                'total_pelanggaran_ringan',
-                'total_pelanggaran_sedang',
-                'total_pelanggaran_berat',
+                'total_prestasi',
+                'total_poin_prestasi',
                 'total_pelanggaran',
-                'total_poin',
+                'total_poin_pelanggaran',
+                'poin_akhir',
             ])
             ->toJson();
     }
@@ -90,13 +96,13 @@ class LvRpViolationSummary extends Component
         $this->filters['startDate'] = Carbon::now()->setTimezone('Asia/Jakarta')->format('01 F Y');
         $this->filters['endDate'] = Carbon::now()->setTimezone('Asia/Jakarta')->format('t F Y');
 
-        $this->dispatchBrowserEvent('datatables:refresh', ['target' => "tStdVio", 'filter' => ['target' => 'reportFilters', 'data' => $this->filters]]);
+        $this->dispatchBrowserEvent('datatables:refresh', ['target' => "tStdReport", 'filter' => ['target' => 'reportFilters', 'data' => $this->filters]]);
     }
 
     function downloadExcel()
     {
         try {
-            $response = Excel::download(new ReportViolationSummaryExport($this->filters), "laporan pelanggaran (summary) - {$this->filters['startDate']} sampai {$this->filters['endDate']}.xlsx");
+            $response = Excel::download(new ReportRankBestExport($this->filters), "laporan peringkat siswa terbaik - {$this->filters['startDate']} sampai {$this->filters['endDate']}.xlsx");
             $this->dispatchBrowserEvent('swal-loader:close');
             return $response;
         } catch (\Exception $ex) {

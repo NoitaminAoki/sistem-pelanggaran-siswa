@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use App\Helpers\StringHelper;
 use App\Models\Transaction\StudentViolation;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -36,6 +35,7 @@ class ReportViolationExport implements FromQuery, WithHeadings, WithStyles, With
         return [
             'No',
             'Pelapor',
+            'NIS Siswa',
             'Nama Siswa',
             'Pelanggaran',
             'Jenis Pelanggaran',
@@ -47,11 +47,12 @@ class ReportViolationExport implements FromQuery, WithHeadings, WithStyles, With
     public function columnFormats(): array
     {
         return [
-            'B' => NumberFormat::FORMAT_TEXT, // Assuming the VARCHAR column is in column 'E'
+            'B' => NumberFormat::FORMAT_TEXT,
             'C' => NumberFormat::FORMAT_TEXT,
             'D' => NumberFormat::FORMAT_TEXT,
             'E' => NumberFormat::FORMAT_TEXT,
             'F' => NumberFormat::FORMAT_TEXT,
+            'G' => NumberFormat::FORMAT_TEXT,
         ];
     }
 
@@ -63,9 +64,10 @@ class ReportViolationExport implements FromQuery, WithHeadings, WithStyles, With
         return [
             ++$this->rowNumber,
             $studentViolation->nama_guru,
+            $studentViolation->nis,
             $studentViolation->nama_siswa,
-            $studentViolation->jenis_pelanggaran,
             $studentViolation->nama_pelanggaran,
+            $studentViolation->jenis_pelanggaran,
             $studentViolation->catatan,
             $studentViolation->created_at,
         ];
@@ -80,6 +82,7 @@ class ReportViolationExport implements FromQuery, WithHeadings, WithStyles, With
             ->select(
                 'student_violations.*',
                 'teachers.nama_guru',
+                'students.nis',
                 'students.nama_siswa',
                 'violations.jenis as jenis_pelanggaran',
                 'violations.nama_pelanggaran',
@@ -111,7 +114,7 @@ class ReportViolationExport implements FromQuery, WithHeadings, WithStyles, With
     {
         $lastRow = $sheet->getHighestDataRow();
 
-        $range = 'A1:G' . $lastRow;
+        $range = 'A1:H' . $lastRow;
 
         $sheet->getStyle($range)->applyFromArray([
             'borders' => [
