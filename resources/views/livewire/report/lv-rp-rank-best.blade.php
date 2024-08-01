@@ -159,7 +159,7 @@
                                 <div class="col-12 mb-4-p5">
                                     <div class="d-flex justify-content-end">
                                         <button type="button" wire:click="resetFilter" class="btn btn-light px-5 mr-2">Reset</button>
-                                        <button type="button" wire:click="dtRpRankBadFilter" class="btn btn-primary px-5">Filter</button>
+                                        <button type="button" wire:click="dtRpRankBestFilter" class="btn btn-primary px-5">Filter</button>
                                     </div>
                                 </div>
                             </div>
@@ -192,11 +192,11 @@
                                     <th scope="col">No</th>
                                     <th scope="col">NIS</th>
                                     <th scope="col">Nama Siswa</th>
-                                    <th scope="col">Pelanggaran (Ringan)</th>
-                                    <th scope="col">Pelanggaran (Sedang)</th>
-                                    <th scope="col">Pelanggaran (Berat)</th>
+                                    <th scope="col">Total Prestasi</th>
+                                    <th scope="col">Total Poin Prestasi</th>
                                     <th scope="col">Total Pelanggaran</th>
                                     <th scope="col">Total Poin Pelanggaran</th>
+                                    <th scope="col">Poin Akhir</th>
                                 </tr>
                             </thead>
                             
@@ -250,7 +250,7 @@
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
                 },
-                url: "{{ route('report.rank.bad.datatables') }}",
+                url: "{{ route('report.rank.best.datatables') }}",
                 data: function (d) {
                     d.filters = reportFilters;
                 },
@@ -260,11 +260,11 @@
             { data: 'DT_RowIndex', name: 'id' },
             { data: 'nis', name: 'nis' },
             { data: 'nama_siswa', name: 'nama_siswa' },
-            { data: 'total_pelanggaran_ringan', name: 'total_pelanggaran_ringan' },
-            { data: 'total_pelanggaran_sedang', name: 'total_pelanggaran_sedang' },
-            { data: 'total_pelanggaran_berat', name: 'total_pelanggaran_berat' },
+            { data: 'total_prestasi', name: 'total_prestasi' },
+            { data: 'total_poin_prestasi', name: 'total_poin_prestasi' },
             { data: 'total_pelanggaran', name: 'total_pelanggaran' },
             { data: 'total_poin_pelanggaran', name: 'total_poin_pelanggaran' },
+            { data: 'poin_akhir', name: 'poin_akhir' },
             ],
             columnDefs: [
             { targets: [3, 4, 5, 6, 7], className: 'text-center' },

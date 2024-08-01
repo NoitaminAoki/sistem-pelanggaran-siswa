@@ -50,7 +50,6 @@ class LvTeacher extends Component
             ->addColumn('action', function ($row) {
                 $actions = [
                     'edit' => ["dataId" => $row->id, 'action' => 'formType = 2; editTeacher($event);'],
-                    'detail' => ["dataId" => $row->id, 'action' => 'showTeacher'],
                     'delete' => ["dataId" => $row->id, 'action' => 'deleteTeacher'],
                 ];
 

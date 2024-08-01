@@ -27,7 +27,7 @@ class LvRpRankBad extends Component
 
     public function render()
     {
-        return view('livewire.report.lv-rp-rank-best')
+        return view('livewire.report.lv-rp-rank-bad')
             ->with(['pageTitle' => "Report Ranking Best Student"])
             ->layout('layouts.cms.lv-main', ['menuName' => 'report_rank']);
     }

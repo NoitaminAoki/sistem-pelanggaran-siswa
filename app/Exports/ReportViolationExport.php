@@ -13,22 +13,43 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithDrawings;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
-class ReportViolationExport implements FromQuery, WithHeadings, WithStyles, WithMapping, ShouldAutoSize, WithColumnFormatting
+class ReportViolationExport implements
+    FromQuery,
+    WithHeadings,
+    WithStyles,
+    WithMapping,
+    ShouldAutoSize,
+    WithColumnFormatting,
+    WithCustomStartCell,
+    WithDrawings,
+    WithEvents
 {
     use Exportable;
 
     protected $filters;
 
     private $rowNumber = 0;
+    private $lastRow = 0;
 
     public function __construct(array $filters)
     {
         $this->filters = $filters;
     }
+
+    public function startCell(): string
+    {
+        return 'A4';
+    }
+
 
     public function headings(): array
     {
@@ -110,11 +131,60 @@ class ReportViolationExport implements FromQuery, WithHeadings, WithStyles, With
         });
     }
 
+    public function drawings()
+    {
+        $drawing = new Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('This is my logo');
+        $drawing->setPath(public_path('images/logo-smkn-2-cibinong.png')); // Path ke file logo
+        $drawing->setHeight(90);
+        $drawing->setCoordinates('A1'); // Tentukan posisi gambar
+
+        return $drawing;
+    }
+
+    public function registerEvents(): array
+    {
+        $datenow = Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y");
+        return [
+            AfterSheet::class => function (AfterSheet $event) use ($datenow) {
+                $sheet = $event->sheet->getDelegate();
+
+                // Menggabungkan kolom dari A1 sampai H1
+                $sheet->mergeCells('A1:H1');
+
+                // Menambahkan alamat di bawah logo
+                $sheet->getCell('A2')->setValue("Jl. SKB No.1, Karadenan, Kec. Cibinong\nKabupaten Bogor, Jawa Barat 16913\nTelp: (0251) 8582276");
+                $sheet->getStyle('A2')->getAlignment()->setWrapText(true);
+                $sheet->mergeCells('A2:H2'); // Sesuaikan rentang kolom jika diperlukan
+                $sheet->getStyle('A2')->getFont()->setBold(true); // Gaya font
+                $sheet->getStyle('A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER); // Teks di tengah
+                $sheet->getStyle('A2')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Teks di tengah
+
+                // Menempatkan teks logo di tengah
+                $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('A1')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Teks di tengah
+
+                // Mengatur tinggi baris
+                $sheet->getRowDimension(1)->setRowHeight(71); // Mengatur tinggi baris pertama
+                $sheet->getRowDimension(2)->setRowHeight(50); // Mengatur tinggi baris kedua
+
+                $sheet->getCell("G{$this->lastRow}")->setValue("Bogor, {$datenow}\nMengetahui,\nKepala Sekolah\n\n\n\nSolihin Al Amin M.Pd");
+                $sheet->getStyle("G{$this->lastRow}")->getAlignment()->setWrapText(true);
+                $sheet->mergeCells("G{$this->lastRow}:H{$this->lastRow}");
+                $sheet->getStyle("G{$this->lastRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER); // Teks di tengah
+                $sheet->getStyle("G{$this->lastRow}")->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Teks di tengah
+                $sheet->getRowDimension($this->lastRow)->setRowHeight(125); // Mengatur tinggi baris ttd
+            },
+        ];
+    }
+
     public function styles(Worksheet $sheet)
     {
         $lastRow = $sheet->getHighestDataRow();
+        $this->lastRow = $lastRow + 2;
 
-        $range = 'A1:H' . $lastRow;
+        $range = 'A4:H' . $lastRow;
 
         $sheet->getStyle($range)->applyFromArray([
             'borders' => [
@@ -130,11 +200,14 @@ class ReportViolationExport implements FromQuery, WithHeadings, WithStyles, With
         ]);
 
         return [
-            // Style the first row.
-            1    => [
+            4    => [
                 'fill' => [
                     'fillType'   => Fill::FILL_SOLID,
                     'startColor' => ['argb' => Color::COLOR_YELLOW],
+                ],
+                'alignment' => [
+                    'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                 ]
             ]
         ];

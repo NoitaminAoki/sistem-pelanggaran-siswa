@@ -159,7 +159,7 @@
                                 <div class="col-12 mb-4-p5">
                                     <div class="d-flex justify-content-end">
                                         <button type="button" wire:click="resetFilter" class="btn btn-light px-5 mr-2">Reset</button>
-                                        <button type="button" wire:click="dtRpViolationFilter" class="btn btn-primary px-5">Filter</button>
+                                        <button type="button" wire:click="dtRpSanctionFilter" class="btn btn-primary px-5">Filter</button>
                                     </div>
                                 </div>
                             </div>
