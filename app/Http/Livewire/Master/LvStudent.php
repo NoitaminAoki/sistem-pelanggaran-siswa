@@ -5,7 +5,11 @@ namespace App\Http\Livewire\Master;
 use Livewire\Component;
 use App\Helpers\StringHelper;
 use App\Models\Master\Student;
+use App\Models\StudentUser;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 
 class LvStudent extends Component
@@ -114,7 +118,7 @@ class LvStudent extends Component
             'birthDate' => 'required',
             'address' => 'required',
         ]);
-
+        DB::beginTransaction();
         try {
             $create = Student::create([
                 'nis' => $this->nis,
@@ -125,7 +129,16 @@ class LvStudent extends Component
                 'alamat' => $this->address,
             ]);
 
+            $studentUser = new StudentUser();
+            $studentUser->username = $this->nis;
+            $studentUser->name = $this->fullname;
+            $studentUser->email_verified_at = Carbon::now();
+            $studentUser->student_id = $create->id;
+            $studentUser->password = Hash::make(Carbon::createFromFormat('Y-m-d', $this->birthDate)->format('dmY'));
+            $studentUser->save();
 
+
+            DB::commit();
             $this->dispatchBrowserEvent('notification:show', [
                 'title' => 'Berhasil menambahkan data!',
                 'icon' => 'success',
@@ -134,6 +147,7 @@ class LvStudent extends Component
             ]);
             $this->reloadDataTables();
         } catch (\Exception $ex) {
+            DB::rollBack();
             $this->dispatchBrowserEvent('notification:show', [
                 'title' => "Gagal menambahkan data! (Error: {$ex->getMessage()})",
                 'icon' => 'error',
@@ -198,12 +212,26 @@ class LvStudent extends Component
                 'icon' => 'error',
             ]);
 
-        $delete = Student::where('id', $id)->delete();
-        $this->dispatchBrowserEvent('notification:show', [
-            'title' => 'Berhasil menghapus data!',
-            'icon' => 'success',
-        ]);
-        $this->reloadDataTables();
+        DB::beginTransaction();
+        try {
+            $delete = Student::where('id', $id)->delete();
+            $deleteAccount = StudentUser::where('student_id', $id)->delete();
+
+            DB::commit();
+            $this->dispatchBrowserEvent('notification:show', [
+                'title' => 'Berhasil menghapus data!',
+                'icon' => 'success',
+            ]);
+            $this->reloadDataTables();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            $this->dispatchBrowserEvent('notification:show', [
+                'title' => "Gagal menghapus data! (Error: {$ex->getMessage()})",
+                'icon' => 'error',
+                'close_modal' => true,
+                'target' => '#studentModal',
+            ]);
+        }
     }
 
     public function resetInput()

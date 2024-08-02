@@ -22,13 +22,12 @@
     </ul>
 </li> --}}
 @php
-use App\Helpers\MenuHelper;
+use App\Helpers\StudentMenuHelper;
 $menuTitle = null;
-$menuList = MenuHelper::GetMenu();
+$menuList = StudentMenuHelper::GetMenu();
 @endphp
 
 @foreach ($menuList as $menu)
-@if (($menu->is_admin_menu && Auth::guard('admin')->user()->is_teacher == 0) || $menu->is_admin_menu == false)
 @if ($menuTitle != $menu->root)
 @php 
 $menuTitle = $menu->root; 
@@ -64,7 +63,6 @@ $menuTitle = $menu->root;
         @endforeach
     </ul>
 </li>
-@endif
 @endif
 @endforeach
 <li class="nav-header"></li>

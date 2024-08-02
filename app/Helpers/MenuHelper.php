@@ -7,6 +7,7 @@ class MenuHelper
     static $MENU = [
         [
             'title' => 'Dashboard',
+            'is_admin_menu' => false,
             'sub_title' => 'Home',
             'name' => 'admin_dashboard',
             'root' => '',
@@ -20,6 +21,7 @@ class MenuHelper
         ],
         [
             'title' => 'Catatan Siswa',
+            'is_admin_menu' => false,
             'sub_title' => '',
             'name' => 'student_record',
             'root' => '',
@@ -37,6 +39,7 @@ class MenuHelper
         ],
         [
             'title' => 'Guru',
+            'is_admin_menu' => true,
             'sub_title' => '',
             'name' => 'master_teacher',
             'root' => 'master',
@@ -52,6 +55,7 @@ class MenuHelper
         ],
         [
             'title' => 'Siswa',
+            'is_admin_menu' => true,
             'sub_title' => '',
             'name' => 'master_student',
             'root' => 'master',
@@ -67,6 +71,7 @@ class MenuHelper
         ],
         [
             'title' => 'Hukum',
+            'is_admin_menu' => true,
             'sub_title' => '',
             'name' => 'master_law',
             'root' => 'master',
@@ -83,6 +88,7 @@ class MenuHelper
         ],
         [
             'title' => 'Prestasi',
+            'is_admin_menu' => true,
             'sub_title' => '',
             'name' => 'master_achievement',
             'root' => 'master',
@@ -98,9 +104,10 @@ class MenuHelper
         ],
         [
             'title' => 'Pelanggaran',
+            'is_admin_menu' => false,
             'sub_title' => '',
             'name' => 'report_violation',
-            'root' => 'master',
+            'root' => 'report',
             'route_name' => '=',
             'route_validate' => ['report.violation', 'report.violation.*'],
             'icon_class' => 'fas fa-file-alt',
@@ -116,9 +123,10 @@ class MenuHelper
         ],
         [
             'title' => 'Sanksi',
+            'is_admin_menu' => false,
             'sub_title' => '',
             'name' => 'report_sanction',
-            'root' => 'master',
+            'root' => 'report',
             'route_name' => '=',
             'route_validate' => ['report.sanction', 'report.sanction.*'],
             'icon_class' => 'fas fa-file-alt',
@@ -134,9 +142,10 @@ class MenuHelper
         ],
         [
             'title' => 'Prestasi',
+            'is_admin_menu' => false,
             'sub_title' => '',
             'name' => 'report_achievement',
-            'root' => 'master',
+            'root' => 'report',
             'route_name' => '=',
             'route_validate' => ['report.achievement', 'report.achievement.*'],
             'icon_class' => 'fas fa-file-alt',
@@ -152,9 +161,10 @@ class MenuHelper
         ],
         [
             'title' => 'Peringkat',
+            'is_admin_menu' => false,
             'sub_title' => '',
             'name' => 'report_rank',
-            'root' => 'master',
+            'root' => 'report',
             'route_name' => '=',
             'route_validate' => ['report.rank', 'report.rank.*'],
             'icon_class' => 'far fa-chart-bar',
