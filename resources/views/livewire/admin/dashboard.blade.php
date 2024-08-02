@@ -6,7 +6,7 @@
     <div class="col-lg-12">
     <div class="card card-primary card-outline">
             <div class="card-body">
-                <h5 class="card-title">Selamat Datang, Administrator!</h5>
+                <h5 class="card-title">Selamat Datang, {{Auth::guard('admin')->user()->name}}</h5>
                 
                 <p class="card-text">
                 Terima kasih telah menggunakan aplikasi Pencatatan Pelanggaran Siswa.
