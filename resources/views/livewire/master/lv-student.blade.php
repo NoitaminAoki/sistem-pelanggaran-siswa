@@ -161,22 +161,37 @@
                 type: "POST"
             },
             columns: [
-            { data: 'DT_RowIndex', name: 'id' },
-            { data: 'nis', name: 'nis' },
-            { data: 'nama_siswa', name: 'nama_siswa' },
-            { data: 'jenis_kelamin', name: 'jenis_kelamin' },
-            { data: 'tempat_lahir', name: 'tempat_lahir' },
-            { data: 'tanggal_lahir', name: 'tanggal_lahir' },
-            { data: 'alamat', name: 'alamat' },
-            { data: 'action', name: 'action', className: 'text-center' },
+                { data: 'DT_RowIndex', name: 'id' },
+                { data: 'nis', name: 'nis' },
+                { data: 'nama_siswa', name: 'nama_siswa' },
+                { data: 'jenis_kelamin', name: 'jenis_kelamin' },
+                { data: 'tempat_lahir', name: 'tempat_lahir' },
+                { 
+                    data: 'tanggal_lahir', 
+                    name: 'tanggal_lahir',
+                    render: function(data, type, row) {
+                        if (data) {
+                            // Parse the date string
+                            var date = new Date(data);
+                            // Format the date as dd-mm-yyyy
+                            var day = ("0" + date.getDate()).slice(-2);
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            var year = date.getFullYear();
+                            return day + '-' + month + '-' + year;
+                        }
+                        return data;
+                    }
+                },
+                { data: 'alamat', name: 'alamat' },
+                { data: 'action', name: 'action', className: 'text-center' },
             ],
             columnDefs: [
-            { targets: 7, orderable: false },
+                { targets: 7, orderable: false },
             ],
         }).on('draw', function() {
             console.info("Datatables: drawed");
         });
-    })
+    });
     
     function editStudent(e) {
         let self = e.currentTarget
