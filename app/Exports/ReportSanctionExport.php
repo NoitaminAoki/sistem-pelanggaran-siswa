@@ -61,7 +61,7 @@ class ReportSanctionExport implements
             'Sanksi',
             'Jenis Sanksi',
             "Total Poin\n(saat dikenakan sanksi)",
-            'Tanggal Laporan'
+            'Tanggal Laporan',
         ];
     }
 
@@ -155,6 +155,10 @@ class ReportSanctionExport implements
                 $sheet->mergeCells('A1:H1');
 
                 // Menambahkan alamat di bawah logo
+                $sheet->getCell('A1')->setValue("SMK NEGERI 2 CIBINONG");
+                $sheet->getStyle('A1')->getFont()->setSize(18); // font size
+                $sheet->getStyle('A1')->getFont()->setBold(true); // Gaya font
+                $sheet->getStyle('A1')->getFont()->getColor()->setARGB("2F3692");
                 $sheet->getCell('A2')->setValue("Jl. SKB No.1, Karadenan, Kec. Cibinong\nKabupaten Bogor, Jawa Barat 16913\nTelp: (0251) 8582276");
                 $sheet->getStyle('A2')->getAlignment()->setWrapText(true);
                 $sheet->mergeCells('A2:H2'); // Sesuaikan rentang kolom jika diperlukan
@@ -168,7 +172,7 @@ class ReportSanctionExport implements
 
                 $sheet->getStyle('G4')->getAlignment()->setWrapText(true);
                 // Mengatur tinggi baris
-                $sheet->getRowDimension(1)->setRowHeight(71); // Mengatur tinggi baris pertama
+                $sheet->getRowDimension(1)->setRowHeight(40); // Mengatur tinggi baris pertama
                 $sheet->getRowDimension(2)->setRowHeight(50); // Mengatur tinggi baris kedua
 
                 $sheet->getCell("G{$this->lastRow}")->setValue("Bogor, {$datenow}\nMengetahui,\nKepala Sekolah\n\n\n\nSolihin Al Amin M.Pd");

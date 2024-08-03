@@ -134,6 +134,10 @@ class ReportAchievementSummaryExport implements
                 $sheet->mergeCells('A1:E1');
 
                 // Menambahkan alamat di bawah logo
+                $sheet->getCell('A1')->setValue("SMK NEGERI 2 CIBINONG");
+                $sheet->getStyle('A1')->getFont()->setSize(18); // font size
+                $sheet->getStyle('A1')->getFont()->setBold(true); // Gaya font
+                $sheet->getStyle('A1')->getFont()->getColor()->setARGB("2F3692");
                 $sheet->getCell('A2')->setValue("Jl. SKB No.1, Karadenan, Kec. Cibinong\nKabupaten Bogor, Jawa Barat 16913\nTelp: (0251) 8582276");
                 $sheet->getStyle('A2')->getAlignment()->setWrapText(true);
                 $sheet->mergeCells('A2:E2'); // Sesuaikan rentang kolom jika diperlukan
@@ -146,7 +150,7 @@ class ReportAchievementSummaryExport implements
                 $sheet->getStyle('A1')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Teks di tengah
 
                 // Mengatur tinggi baris
-                $sheet->getRowDimension(1)->setRowHeight(71); // Mengatur tinggi baris pertama
+                $sheet->getRowDimension(1)->setRowHeight(40); // Mengatur tinggi baris pertama
                 $sheet->getRowDimension(2)->setRowHeight(50); // Mengatur tinggi baris kedua
 
                 $sheet->getCell("D{$this->lastRow}")->setValue("Bogor, {$datenow}\nMengetahui,\nKepala Sekolah\n\n\n\nSolihin Al Amin M.Pd");

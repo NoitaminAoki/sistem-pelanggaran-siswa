@@ -5,9 +5,11 @@ namespace App\Http\Livewire\Report;
 use App\Exports\ReportAchievementSummaryExport;
 use App\Helpers\StringHelper;
 use App\Models\Master\Student;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
@@ -93,6 +95,50 @@ class LvRpAchievementSummary extends Component
             $response = Excel::download(new ReportAchievementSummaryExport($this->filters), "laporan prestasi (summary) - {$this->filters['startDate']} sampai {$this->filters['endDate']}.xlsx");
             $this->dispatchBrowserEvent('swal-loader:close');
             return $response;
+        } catch (\Exception $ex) {
+            $this->dispatchBrowserEvent('notification:show', [
+                'title' => "Ups, terjadi kesalahan! (Error: {$ex->getMessage()})",
+                'icon' => 'error',
+            ]);
+        }
+    }
+
+    function downloadPdf()
+    {
+        try {
+            $startDate = $this->filters['startDate'] ? Carbon::createFromFormat('d F Y', $this->filters['startDate'], 'Asia/Jakarta')->format('Y-m-d 00:00:00') : Carbon::now()->setTimezone('Asia/Jakarta')->format('01 F Y');
+            $endDate = $this->filters['endDate'] ? Carbon::createFromFormat('d F Y', $this->filters['endDate'], 'Asia/Jakarta')->format('Y-m-d 23:59:59') : Carbon::now()->setTimezone('Asia/Jakarta')->format('t F Y');
+
+            $model = Student::query()
+                ->select(
+                    'students.id',
+                    'students.nis',
+                    'students.nama_siswa',
+                    DB::raw('COALESCE(COUNT(achievements.id), 0) as total_prestasi'),
+                    DB::raw('COALESCE(SUM(student_achievements.poin_penambahan), 0) as total_poin'),
+                )
+                ->leftJoin('student_achievements', function ($query) use ($startDate, $endDate) {
+                    $query->on('student_achievements.student_nis', 'students.nis')
+                        ->where('student_achievements.created_at', '>=', $startDate)
+                        ->where('student_achievements.created_at', '<=', $endDate);
+                })
+                ->leftJoin('achievements', 'achievements.id', 'student_achievements.achievement_id')
+                ->orderBy('students.nama_siswa', 'asc')
+                ->groupBy('students.id', 'students.nis', 'students.nama_siswa')
+                ->get();
+            $data = [
+                'data' => $model,
+            ];
+            // return view('layouts.pdf.pdf-achievement-summary', $data);
+
+            $pdf = Pdf::setOption('chroot', [Storage::path('images')])
+                ->loadView('layouts.pdf.pdf-achievement-summary', $data)
+                ->setPaper('a4', 'portrait')->output();
+            $this->dispatchBrowserEvent('swal-loader:close');
+            return response()->streamDownload(
+                fn () => print($pdf),
+                "laporan Prestasi (summary) - {$this->filters['startDate']} sampai {$this->filters['endDate']}.pdf"
+            );
         } catch (\Exception $ex) {
             $this->dispatchBrowserEvent('notification:show', [
                 'title' => "Ups, terjadi kesalahan! (Error: {$ex->getMessage()})",

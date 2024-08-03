@@ -6,8 +6,10 @@ use App\Exports\ReportSanctionExport;
 use App\Helpers\StringHelper;
 use App\Models\Master\Student;
 use App\Models\Transaction\StudentSanction;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
@@ -163,6 +165,55 @@ class LvRpSanction extends Component
             $response = Excel::download(new ReportSanctionExport($this->filters), "laporan Sanksi - {$this->filters['startDate']} sampai {$this->filters['endDate']}.xlsx");
             $this->dispatchBrowserEvent('swal-loader:close');
             return $response;
+        } catch (\Exception $ex) {
+            $this->dispatchBrowserEvent('notification:show', [
+                'title' => "Ups, terjadi kesalahan! (Error: {$ex->getMessage()})",
+                'icon' => 'error',
+            ]);
+        }
+    }
+
+    function downloadPdf()
+    {
+        try {
+            $startDate = $this->filters['startDate'] ? Carbon::createFromFormat('d F Y', $this->filters['startDate'], 'Asia/Jakarta')->format('Y-m-d 00:00:00') : Carbon::now()->setTimezone('Asia/Jakarta')->format('01 F Y');
+            $endDate = $this->filters['endDate'] ? Carbon::createFromFormat('d F Y', $this->filters['endDate'], 'Asia/Jakarta')->format('Y-m-d 23:59:59') : Carbon::now()->setTimezone('Asia/Jakarta')->format('t F Y');
+            $studentNis = $this->filters['nis'];
+
+            $model = StudentSanction::query()
+                ->select(
+                    'student_sanctions.*',
+                    'teachers.nama_guru',
+                    'students.nis',
+                    'students.nama_siswa',
+                    'sanctions.jenis as jenis_sanksi',
+                    'sanctions.deskripsi as nama_sanksi',
+                )
+                ->leftJoin('teachers', 'student_sanctions.teacher_nip', 'teachers.nip')
+                ->join('students', 'student_sanctions.student_nis', 'students.nis')
+                ->join('sanctions', 'student_sanctions.sanction_id', 'sanctions.id')
+                ->when($startDate, function ($query, $startDate) use ($endDate) {
+                    $query->where('student_sanctions.created_at', '>=', $startDate)
+                        ->where('student_sanctions.created_at', '<=', $endDate);
+                })
+                ->when($studentNis, function ($query, $studentNis) {
+                    $query->where('students.nis', $studentNis);
+                })
+                ->orderBy('id', 'ASC')
+                ->get();
+            $data = [
+                'data' => $model,
+            ];
+            // return view('layouts.pdf.pdf-sanction', $data);
+
+            $pdf = Pdf::setOption('chroot', [Storage::path('images')])
+                ->loadView('layouts.pdf.pdf-sanction', $data)
+                ->setPaper('a4', 'portrait')->output();
+            $this->dispatchBrowserEvent('swal-loader:close');
+            return response()->streamDownload(
+                fn () => print($pdf),
+                "laporan Sanksi - {$this->filters['startDate']} sampai {$this->filters['endDate']}.pdf"
+            );
         } catch (\Exception $ex) {
             $this->dispatchBrowserEvent('notification:show', [
                 'title' => "Ups, terjadi kesalahan! (Error: {$ex->getMessage()})",

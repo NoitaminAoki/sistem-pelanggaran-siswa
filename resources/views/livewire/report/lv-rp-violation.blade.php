@@ -251,6 +251,7 @@
                                     
                                     <div class="form-box-content">
                                         <button type="button" @click="downloadExcel" wire:loading.attr="disabled" class="btn px-4 bg-teal"><i class="fas fa-file-excel mr-1"></i> Unduh Excel</button>
+                                        <button type="button" @click="downloadPdf" wire:loading.attr="disabled" class="btn px-4 bg-danger"><i class="fas fa-file-pdf mr-1"></i> Unduh PDF</button>
                                     </div>
                                 </div>
                             </div>
@@ -355,6 +356,10 @@
     function downloadExcel() {
         swalLoader.fire()
         @this.downloadExcel();
+    }
+    function downloadPdf() {
+        swalLoader.fire()
+        @this.downloadPdf();
     }
 </script>
 @stack('child-script')

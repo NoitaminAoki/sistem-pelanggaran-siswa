@@ -5,9 +5,11 @@ namespace App\Http\Livewire\Report;
 use App\Exports\ReportSanctionSummaryExport;
 use App\Helpers\StringHelper;
 use App\Models\Master\Student;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
@@ -97,6 +99,52 @@ class LvRpSanctionSummary extends Component
             $response = Excel::download(new ReportSanctionSummaryExport($this->filters), "laporan sanksi (summary) - {$this->filters['startDate']} sampai {$this->filters['endDate']}.xlsx");
             $this->dispatchBrowserEvent('swal-loader:close');
             return $response;
+        } catch (\Exception $ex) {
+            $this->dispatchBrowserEvent('notification:show', [
+                'title' => "Ups, terjadi kesalahan! (Error: {$ex->getMessage()})",
+                'icon' => 'error',
+            ]);
+        }
+    }
+
+    function downloadPdf()
+    {
+        try {
+            $startDate = $this->filters['startDate'] ? Carbon::createFromFormat('d F Y', $this->filters['startDate'], 'Asia/Jakarta')->format('Y-m-d 00:00:00') : Carbon::now()->setTimezone('Asia/Jakarta')->format('01 F Y');
+            $endDate = $this->filters['endDate'] ? Carbon::createFromFormat('d F Y', $this->filters['endDate'], 'Asia/Jakarta')->format('Y-m-d 23:59:59') : Carbon::now()->setTimezone('Asia/Jakarta')->format('t F Y');
+
+            $model = Student::query()
+                ->select(
+                    'students.id',
+                    'students.nis',
+                    'students.nama_siswa',
+                    DB::raw('COALESCE(SUM(CASE WHEN sanctions.jenis = "Ringan" THEN 1 ELSE 0 END), 0) as total_sanksi_ringan'),
+                    DB::raw('COALESCE(SUM(CASE WHEN sanctions.jenis = "Sedang" THEN 1 ELSE 0 END), 0) as total_sanksi_sedang'),
+                    DB::raw('COALESCE(SUM(CASE WHEN sanctions.jenis = "Berat" THEN 1 ELSE 0 END), 0) as total_sanksi_berat'),
+                    DB::raw('COALESCE(COUNT(sanctions.id), 0) as total_sanksi'),
+                )
+                ->leftJoin('student_sanctions', function ($query) use ($startDate, $endDate) {
+                    $query->on('student_sanctions.student_nis', 'students.nis')
+                        ->where('student_sanctions.created_at', '>=', $startDate)
+                        ->where('student_sanctions.created_at', '<=', $endDate);
+                })
+                ->leftJoin('sanctions', 'sanctions.id', 'student_sanctions.sanction_id')
+                ->orderBy('students.nama_siswa', 'asc')
+                ->groupBy('students.id', 'students.nis', 'students.nama_siswa')
+                ->get();
+            $data = [
+                'data' => $model,
+            ];
+            // return view('layouts.pdf.pdf-sanction-summary', $data);
+
+            $pdf = Pdf::setOption('chroot', [Storage::path('images')])
+                ->loadView('layouts.pdf.pdf-sanction-summary', $data)
+                ->setPaper('a4', 'portrait')->output();
+            $this->dispatchBrowserEvent('swal-loader:close');
+            return response()->streamDownload(
+                fn () => print($pdf),
+                "laporan Sanksi (summary) - {$this->filters['startDate']} sampai {$this->filters['endDate']}.pdf"
+            );
         } catch (\Exception $ex) {
             $this->dispatchBrowserEvent('notification:show', [
                 'title' => "Ups, terjadi kesalahan! (Error: {$ex->getMessage()})",

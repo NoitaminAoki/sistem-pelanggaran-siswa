@@ -19,6 +19,7 @@ use App\Http\Livewire\Transaction as LvTransaction;
 |
 */
 
+Route::get('/testing', [Admin\LoginController::class, 'testing']);
 Route::middleware([
     'auth:admin',
     // config('jetstream.auth_session'),
