@@ -53,5 +53,6 @@ Route::middleware([
     Route::post('/logout', [Student\LoginController::class, 'logout'])->name('logout');
 });
 
-Route::get('/login', [Student\LoginController::class, 'viewLogin'])->name('student.login');
+Route::get('/login', [Student\LoginController::class, 'viewLogin'])->name('login');
+Route::get('student/login', [Student\LoginController::class, 'viewLogin'])->name('student.login');
 Route::post('/login', [Student\LoginController::class, 'login'])->name('student.login.create');
