@@ -27,6 +27,14 @@
             font-weight: 500;
         }
         
+        .text-caption {
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .text-caption-start {
+            font-size: 18px;
+        }
         .bg-yellow {
             background-color: #FFFF00 !important;
         }
@@ -89,6 +97,10 @@
                         Kabupaten Bogor, Jawa Barat 16913<br>
                         Telp: (0251) 8582276
                     </p>
+                    <p class="text-caption mb-0 py-0">
+                    <b class="text-caption-start">Laporan Prestasi Siswa</b><br>
+                        Tanggal: {{$startDate}} - {{$endDate}}
+                    </p>
                 </th>
             </tr>
         </thead>
@@ -115,7 +127,7 @@
                 <td> {{$item->nama_siswa}} </td>
                 <td> {{$item->nama_prestasi}} </td>
                 <td> {{$item->poin_prestasi}} </td>
-                <td> {{$item->catatan}} </td>
+                <td> {{$item->catatan ?? '-'}} </td>
                 <td class="text-center"> {{$item->created_at->setTimezone('Asia/Jakarta')->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format('d F Y H:i \W\I\B')}} </td>
             </tr>
             @endforeach
@@ -125,7 +137,7 @@
                 <td colspan="6" class="border-0"></td>
                 <td colspan="2" class="border-0">
                     <p class="mt-4 w-100 text-center">
-                        Bogor, {{Carbon\Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y")}}<br>
+                        Bogor, {{Carbon\Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("l d F Y")}}<br>
                         Mengetahui,<br>
                         Kepala Sekolah<br>
                         <br><br><br><br>

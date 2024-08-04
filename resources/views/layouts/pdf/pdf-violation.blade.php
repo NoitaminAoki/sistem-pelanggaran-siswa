@@ -21,6 +21,15 @@
             font-size: 12px;
             font-weight: 700;
         }
+
+        .text-caption {
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .text-caption-start {
+            font-size: 18px;
+        }
         
         .text-desc {
             font-size: 12px;
@@ -75,7 +84,7 @@
     </style>
 </head>
 <body>
-    <table class="table" width="100%">
+    <table class="table mb-0 pb-0" width="100%">
         <thead>
             <tr>
                 <th class="text-center border-0">
@@ -89,11 +98,15 @@
                         Kabupaten Bogor, Jawa Barat 16913<br>
                         Telp: (0251) 8582276
                     </p>
+                    <p class="text-caption mb-0 py-0">
+                    <b class="text-caption-start">Laporan Pelanggaran Siswa</b><br>
+                        Tanggal: {{$startDate}} - {{$endDate}}
+                    </p>
                 </th>
             </tr>
         </thead>
     </table>
-    <table class="table table-bordered cs-table-border text-desc" width="100%">
+    <table class="table table-bordered cs-table-border text-desc mt-0 pt-0" width="100%">
         <thead> 
             <tr>
                 <th scope="col" class="text-center align-middle bg-yellow" style="width: 30px;">No</th>
@@ -115,7 +128,7 @@
                 <td> {{$item->nama_siswa}} </td>
                 <td> {{$item->nama_pelanggaran}} </td>
                 <td> {{$item->jenis_pelanggaran}} </td>
-                <td> {{$item->catatan}} </td>
+                <td> {{$item->catatan ?? '-'}} </td>
                 <td class="text-center"> {{$item->created_at->setTimezone('Asia/Jakarta')->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format('d F Y H:i \W\I\B')}} </td>
             </tr>
             @endforeach
@@ -125,7 +138,7 @@
                 <td colspan="6" class="border-0"></td>
                 <td colspan="2" class="border-0">
                     <p class="mt-4 w-100 text-center">
-                        Bogor, {{Carbon\Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y")}}<br>
+                        Bogor, {{Carbon\Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("l d F Y")}}<br>
                         Mengetahui,<br>
                         Kepala Sekolah<br>
                         <br><br><br><br>

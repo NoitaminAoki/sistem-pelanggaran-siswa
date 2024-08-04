@@ -22,6 +22,14 @@
             font-weight: 700;
         }
         
+        .text-caption {
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .text-caption-start {
+            font-size: 18px;
+        }
         .text-desc {
             font-size: 12px;
             font-weight: 500;
@@ -89,6 +97,10 @@
                         Kabupaten Bogor, Jawa Barat 16913<br>
                         Telp: (0251) 8582276
                     </p>
+                    <p class="text-caption mb-0 py-0">
+                    <b class="text-caption-start">Laporan Sanksi Siswa (<i>Summary</i>)</b><br>
+                        Tanggal: {{$startDate}} - {{$endDate}}
+                    </p>
                 </th>
             </tr>
         </thead>
@@ -123,7 +135,7 @@
                 <td colspan="5" class="border-0"></td>
                 <td colspan="2" class="border-0">
                     <p class="mt-4 w-100 text-center">
-                        Bogor, {{Carbon\Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y")}}<br>
+                        Bogor, {{Carbon\Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("l d F Y")}}<br>
                         Mengetahui,<br>
                         Kepala Sekolah<br>
                         <br><br><br><br>
