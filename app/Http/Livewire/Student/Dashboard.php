@@ -9,7 +9,7 @@ class Dashboard extends Component
     public function render()
     {
         return view('livewire.student.dashboard')
-            ->with(['pageTitle' => "Admin Dashboard"])
+            ->with(['pageTitle' => "Student Dashboard"])
             ->layout('layouts/student/lv-main', ['menuName' => 'dashboard']);
     }
 }
