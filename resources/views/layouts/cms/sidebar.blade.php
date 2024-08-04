@@ -55,12 +55,14 @@ $menuTitle = $menu->root;
     </a>
     <ul class="nav nav-treeview">
         @foreach ($menu->branch as $branch)
+        @if (($branch->is_admin_menu && Auth::guard('admin')->user()->is_teacher == 0) || $branch->is_admin_menu == false)
         <li class="nav-item">
             <a href="{{ route($branch->route_name) }}" class="nav-link {{ (Route::is($branch->route_validate))? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>{{$branch->title}}</p>
             </a>
         </li>
+        @endif
         @endforeach
     </ul>
 </li>

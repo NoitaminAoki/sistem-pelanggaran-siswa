@@ -32,9 +32,9 @@ class MenuHelper
                 ['name' => 'home', 'has_link' => true, 'route_name' => 'admin.dashboard'],
             ],
             'branch' => [
-                ['name' => 'student_violation', 'title' => 'Pelanggaran', 'route_name' => 'record.student.violation', 'route_validate' => ['record.student.violation', 'record.student.violation.*']],
-                ['name' => 'student_sanction', 'title' => 'Sanksi', 'route_name' => 'record.student.sanction', 'route_validate' => ['record.student.sanction', 'record.student.sanction.*']],
-                ['name' => 'student_achievement', 'title' => 'Prestasi', 'route_name' => 'record.student.achievement', 'route_validate' => ['record.student.achievement', 'record.student.achievement.*']],
+                ['name' => 'student_violation', 'is_admin_menu' => false, 'title' => 'Pelanggaran', 'route_name' => 'record.student.violation', 'route_validate' => ['record.student.violation', 'record.student.violation.*']],
+                ['name' => 'student_sanction', 'is_admin_menu' => true,  'title' => 'Sanksi', 'route_name' => 'record.student.sanction', 'route_validate' => ['record.student.sanction', 'record.student.sanction.*']],
+                ['name' => 'student_achievement', 'is_admin_menu' => false, 'title' => 'Prestasi', 'route_name' => 'record.student.achievement', 'route_validate' => ['record.student.achievement', 'record.student.achievement.*']],
             ],
         ],
         [
@@ -82,8 +82,8 @@ class MenuHelper
                 ['name' => 'home', 'has_link' => false],
             ],
             'branch' => [
-                ['name' => 'master_violation', 'title' => 'Pelanggaran', 'route_name' => 'master.law.violation', 'route_validate' => ['master.law.violation', 'master.law.violation.*']],
-                ['name' => 'master_sanction', 'title' => 'Sanksi', 'route_name' => 'master.law.sanction', 'route_validate' => ['master.law.sanction', 'master.law.sanction.*']],
+                ['name' => 'master_violation', 'is_admin_menu' => false, 'title' => 'Pelanggaran', 'route_name' => 'master.law.violation', 'route_validate' => ['master.law.violation', 'master.law.violation.*']],
+                ['name' => 'master_sanction', 'is_admin_menu' => false, 'title' => 'Sanksi', 'route_name' => 'master.law.sanction', 'route_validate' => ['master.law.sanction', 'master.law.sanction.*']],
             ],
         ],
         [
@@ -117,8 +117,8 @@ class MenuHelper
                 ['name' => 'violation', 'has_link' => false],
             ],
             'branch' => [
-                ['name' => 'report_violation_all', 'title' => 'Keseluruhan', 'route_name' => 'report.violation', 'route_validate' => ['report.violation']],
-                ['name' => 'report_violation_summary', 'title' => 'Summary', 'route_name' => 'report.violation.summary', 'route_validate' => ['report.violation.summary']],
+                ['name' => 'report_violation_all', 'is_admin_menu' => false, 'title' => 'Keseluruhan', 'route_name' => 'report.violation', 'route_validate' => ['report.violation']],
+                ['name' => 'report_violation_summary', 'is_admin_menu' => false, 'title' => 'Summary', 'route_name' => 'report.violation.summary', 'route_validate' => ['report.violation.summary']],
             ],
         ],
         [
@@ -136,8 +136,8 @@ class MenuHelper
                 ['name' => 'sanction', 'has_link' => false],
             ],
             'branch' => [
-                ['name' => 'report_sanction_all', 'title' => 'Keseluruhan', 'route_name' => 'report.sanction.all', 'route_validate' => ['report.sanction.all']],
-                ['name' => 'report_sanction_summary', 'title' => 'Summary', 'route_name' => 'report.sanction.summary', 'route_validate' => ['report.sanction.summary']],
+                ['name' => 'report_sanction_all', 'is_admin_menu' => false, 'title' => 'Keseluruhan', 'route_name' => 'report.sanction.all', 'route_validate' => ['report.sanction.all']],
+                ['name' => 'report_sanction_summary', 'is_admin_menu' => false, 'title' => 'Summary', 'route_name' => 'report.sanction.summary', 'route_validate' => ['report.sanction.summary']],
             ],
         ],
         [
@@ -155,8 +155,8 @@ class MenuHelper
                 ['name' => 'achievement', 'has_link' => false],
             ],
             'branch' => [
-                ['name' => 'report_achievement_all', 'title' => 'Keseluruhan', 'route_name' => 'report.achievement.all', 'route_validate' => ['report.achievement.all']],
-                ['name' => 'report_achievement_summary', 'title' => 'Summary', 'route_name' => 'report.achievement.summary', 'route_validate' => ['report.achievement.summary']],
+                ['name' => 'report_achievement_all', 'is_admin_menu' => false, 'title' => 'Keseluruhan', 'route_name' => 'report.achievement.all', 'route_validate' => ['report.achievement.all']],
+                ['name' => 'report_achievement_summary', 'is_admin_menu' => false, 'title' => 'Summary', 'route_name' => 'report.achievement.summary', 'route_validate' => ['report.achievement.summary']],
             ],
         ],
         [
@@ -174,8 +174,8 @@ class MenuHelper
                 ['name' => 'rank', 'has_link' => false],
             ],
             'branch' => [
-                ['name' => 'report_rank_best', 'title' => 'Siswa Terbaik', 'route_name' => 'report.rank.best', 'route_validate' => ['report.rank.best']],
-                ['name' => 'report_rank_bad', 'title' => 'Siswa Ternakal', 'route_name' => 'report.rank.bad', 'route_validate' => ['report.rank.bad']],
+                ['name' => 'report_rank_best', 'is_admin_menu' => false, 'title' => 'Siswa Terbaik', 'route_name' => 'report.rank.best', 'route_validate' => ['report.rank.best']],
+                ['name' => 'report_rank_bad', 'is_admin_menu' => false, 'title' => 'Siswa Ternakal', 'route_name' => 'report.rank.bad', 'route_validate' => ['report.rank.bad']],
             ],
         ],
     ];
