@@ -35,6 +35,24 @@ class StudentMenuHelper
                 ['name' => 'student_achievement', 'title' => 'Prestasi', 'route_name' => 'student.record.achievement', 'route_validate' => ['student.record.achievement', 'student.record.achievement.*']],
             ],
         ],
+        [
+            'title' => 'Peringkat',
+            'sub_title' => '',
+            'name' => 'report_rank',
+            'root' => 'report',
+            'route_name' => '=',
+            'route_validate' => ['report.rank', 'report.rank.*'],
+            'icon_class' => 'far fa-chart-bar',
+            'breadcrumb' => [
+                ['name' => 'home', 'has_link' => true, 'route_name' => 'admin.dashboard'],
+                ['name' => 'report', 'has_link' => false],
+                ['name' => 'rank', 'has_link' => false],
+            ],
+            'branch' => [
+                ['name' => 'report_rank_best', 'title' => 'Siswa Terbaik', 'route_name' => 'report.rank.best', 'route_validate' => ['report.rank.best']],
+                ['name' => 'report_rank_bad', 'title' => 'Siswa Terburuk', 'route_name' => 'report.rank.bad', 'route_validate' => ['report.rank.bad']],
+            ],
+        ],
     ];
 
     public static function GetMenu()

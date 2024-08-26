@@ -131,7 +131,8 @@
                 <td colspan="3" class="border-0"></td>
                 <td colspan="2" class="border-0">
                     <p class="mt-4 w-100 text-center">
-                        Bogor, {{Carbon\Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("l d F Y")}}<br>
+                        {{-- Bogor, {{Carbon\Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("l d F Y")}}<br> --}}
+                        Bogor, Rabu 31 Juli 2024<br>
                         Mengetahui,<br>
                         Kepala Sekolah<br>
                         <br><br><br><br>

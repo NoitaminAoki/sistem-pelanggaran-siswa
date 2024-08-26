@@ -141,7 +141,7 @@ class LvRpRankBad extends Component
             $data = [
                 'data' => $model,
                 'startDate' => Carbon::createFromFormat('d F Y', $this->filters['startDate'])->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y"),
-                'endDate' => Carbon::createFromFormat('d F Y', $this->filters['startDate'])->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y"),
+                'endDate' => Carbon::createFromFormat('d F Y', $this->filters['endDate'])->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y"),
             ];
             // return view('layouts.pdf.pdf-rank-bad', $data);
 

@@ -98,7 +98,7 @@
                         Telp: (0251) 8582276
                     </p>
                     <p class="text-caption mb-0 py-0">
-                    <b class="text-caption-start">Laporan Peringkat Siswa Ternakal</b><br>
+                    <b class="text-caption-start">Laporan Peringkat Siswa Terburuk</b><br>
                         Tanggal: {{$startDate}} - {{$endDate}}
                     </p>
                 </th>
@@ -137,7 +137,8 @@
                 <td colspan="6" class="border-0"></td>
                 <td colspan="2" class="border-0">
                     <p class="mt-4 w-100 text-center">
-                        Bogor, {{Carbon\Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("l d F Y")}}<br>
+                        {{-- Bogor, {{Carbon\Carbon::now()->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("l d F Y")}}<br> --}}
+                        Bogor, Rabu 31 Juli 2024<br>
                         Mengetahui,<br>
                         Kepala Sekolah<br>
                         <br><br><br><br>

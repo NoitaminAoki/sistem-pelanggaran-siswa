@@ -109,6 +109,9 @@ class LvRpViolation extends Component
             ->editColumn('nama_guru', function ($stdVio) {
                 return $stdVio->nama_guru ?? 'Administrator';
             })
+            ->editColumn('catatan', function ($row) {
+                return $row->catatan ?? '-';
+            })
             ->only([
                 'id',
                 'nama_guru',
@@ -204,7 +207,7 @@ class LvRpViolation extends Component
             $data = [
                 'data' => $model,
                 'startDate' => Carbon::createFromFormat('d F Y', $this->filters['startDate'])->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y"),
-                'endDate' => Carbon::createFromFormat('d F Y', $this->filters['startDate'])->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y"),
+                'endDate' => Carbon::createFromFormat('d F Y', $this->filters['endDate'])->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y"),
             ];
             // return view('layouts.pdf.pdf-violation', $data);
 

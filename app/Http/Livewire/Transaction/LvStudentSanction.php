@@ -98,6 +98,9 @@ class LvStudentSanction extends Component
             ->editColumn('nama_guru', function ($stdSanc) {
                 return $stdSanc->nama_guru ?? 'Administrator';
             })
+            ->editColumn('catatan', function ($row) {
+                return $row->catatan ?? '-';
+            })
             ->rawColumns(['action'])
             ->only([
                 'id',

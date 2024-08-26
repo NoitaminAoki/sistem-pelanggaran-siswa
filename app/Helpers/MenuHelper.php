@@ -175,7 +175,7 @@ class MenuHelper
             ],
             'branch' => [
                 ['name' => 'report_rank_best', 'is_admin_menu' => false, 'title' => 'Siswa Terbaik', 'route_name' => 'report.rank.best', 'route_validate' => ['report.rank.best']],
-                ['name' => 'report_rank_bad', 'is_admin_menu' => false, 'title' => 'Siswa Ternakal', 'route_name' => 'report.rank.bad', 'route_validate' => ['report.rank.bad']],
+                ['name' => 'report_rank_bad', 'is_admin_menu' => false, 'title' => 'Siswa Terburuk', 'route_name' => 'report.rank.bad', 'route_validate' => ['report.rank.bad']],
             ],
         ],
     ];

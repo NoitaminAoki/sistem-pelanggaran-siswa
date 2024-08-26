@@ -85,11 +85,12 @@ class LvSanction extends Component
 
         $sanction = Sanction::where('id', $id)->firstOrFail();
         $this->viewFormType = 2;
-        $this->sanctionCode = $sanction->kode_pelanggaran;
+        $this->sanctionCode = $sanction->kode_sanksi;
         $this->sanctionType = $sanction->jenis;
-        $this->sanctionDesc = $sanction->nama_pelanggaran;
-        $this->sanctionPointMin = $sanction->bobot_poin;
-        $this->sanctionNote = $sanction->kategori;
+        $this->sanctionDesc = $sanction->deskripsi;
+        $this->sanctionPointMin = $sanction->poin_minimum;
+        $this->sanctionPointLimit = $sanction->poin_batasan;
+        $this->sanctionNote = $sanction->catatan;
     }
 
     public function sendSanction(int $formType)

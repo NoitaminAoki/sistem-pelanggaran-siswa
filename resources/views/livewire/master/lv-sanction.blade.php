@@ -89,15 +89,15 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="mdSanctionPoint">Poin Minimum</label>
-                                    <input wire:model.defer="sanctionPoint" type="number" name="sanctionPoint" id="mdSanctionPoint" class="form-control {{($errors->has('sanctionPoint'))? 'is-invalid' : ''}}" autocomplete="off" required>
+                                    <label for="mdSanctionPointMin">Poin Minimum</label>
+                                    <input wire:model.defer="sanctionPointMin" type="number" name="sanctionPointMin" id="mdSanctionPointMin" class="form-control {{($errors->has('sanctionPointMin'))? 'is-invalid' : ''}}" autocomplete="off" required>
                                     @error('sanctionPoint') <span class="text-sm text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="mdSanctionPoint">Poin Batas</label>
-                                    <input wire:model.defer="sanctionPoint" type="number" name="sanctionPoint" id="mdSanctionPoint" class="form-control {{($errors->has('sanctionPoint'))? 'is-invalid' : ''}}" autocomplete="off" required>
+                                    <label for="mdSanctionPointLimit">Poin Batas</label>
+                                    <input wire:model.defer="sanctionPointLimit" type="number" name="sanctionPointLimit" id="mdSanctionPointLimit" class="form-control {{($errors->has('sanctionPointLimit'))? 'is-invalid' : ''}}" autocomplete="off" required>
                                     @error('sanctionPoint') <span class="text-sm text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>

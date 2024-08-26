@@ -65,7 +65,8 @@ use App\Helpers\MenuHelper;
     <!-- /.navbar -->
     
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-light-teal elevation-4">
+    {{-- <aside class="main-sidebar sidebar-light-teal elevation-4"> --}}
+    <aside class="main-sidebar sidebar-light-teal elevation-1">
       <!-- Brand Logo -->
       <a href="{{ url('/') }}" class="brand-link">
         <img src="{{ asset('images/pages/logo-app-new.png') }}" alt="Brand Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -113,7 +114,7 @@ use App\Helpers\MenuHelper;
             </div><!-- /.col -->
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
-                @foreach ($currentMenu->breadcrumb as $breadcrumb)
+                {{-- @foreach ($currentMenu->breadcrumb as $breadcrumb)
                 <li class="breadcrumb-item">
                   @if ($breadcrumb['has_link'])
                   <a href="{{ route($breadcrumb['route_name']) }}">{{$breadcrumb['name']}}</a>
@@ -121,7 +122,7 @@ use App\Helpers\MenuHelper;
                   {{$breadcrumb['name']}}
                   @endif
                 </li>    
-                @endforeach
+                @endforeach --}}
               </ol>
             </div><!-- /.col -->
           </div><!-- /.row -->

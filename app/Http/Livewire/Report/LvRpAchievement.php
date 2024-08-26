@@ -109,6 +109,9 @@ class LvRpAchievement extends Component
             ->editColumn('nama_guru', function ($stdSanc) {
                 return $stdSanc->nama_guru ?? 'Administrator';
             })
+            ->editColumn('catatan', function ($row) {
+                return $row->catatan ?? '-';
+            })
             ->only([
                 'id',
                 'nama_guru',
@@ -203,7 +206,7 @@ class LvRpAchievement extends Component
             $data = [
                 'data' => $model,
                 'startDate' => Carbon::createFromFormat('d F Y', $this->filters['startDate'])->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y"),
-                'endDate' => Carbon::createFromFormat('d F Y', $this->filters['startDate'])->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y"),
+                'endDate' => Carbon::createFromFormat('d F Y', $this->filters['endDate'])->locale('id')->settings(['formatFunction' => 'translatedFormat'])->format("d F Y"),
             ];
             // return view('layouts.pdf.pdf-achievement', $data);
 

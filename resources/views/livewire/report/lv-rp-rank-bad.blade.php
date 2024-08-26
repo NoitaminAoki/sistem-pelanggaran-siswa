@@ -184,7 +184,7 @@
                             </div>
                         </div>
                     </div>
-                    <h5>Peringkat 10 Siswa Ternakal</h5>
+                    <h5>Peringkat 10 Siswa Terburuk</h5>
                     <hr>
                     <div wire:ignore class="table-responsive">
                         <table class="table table-striped table-bordered" id="tStdReport" width="100%">
